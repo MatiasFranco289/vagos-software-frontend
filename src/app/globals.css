@@ -16,4 +16,10 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .glow-text {
+    color: #fff;
+    text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 1px #fb923c,
+      0 0 5px #fb923c, 0 0 10px #fb923c, 0 0 50px #fb923c, 0 0 60px #fb923c;
+  }
 }
