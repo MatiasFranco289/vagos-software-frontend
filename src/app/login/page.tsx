@@ -4,9 +4,9 @@ import Image from "next/image";
 import logo from "../../../public/logo.png";
 import { loginSchema } from "@/validations/LoginValidations";
 import { ErrorMessage } from "formik";
-import Modal from "@/components/Modal";
+import Modal from "@/components/Modal/Modal";
 import { useState } from "react";
-import GlowingButton from "@/components/GlowingButton";
+import GlowingButton from "@/components/GlowingButton/GlowingButton";
 
 export default function Login() {
   interface UserCredentials {

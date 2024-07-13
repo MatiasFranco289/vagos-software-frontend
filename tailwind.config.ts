@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import { modalKeyframes } from "./src/components/Modal/Animations";
+import { glowingButtonKeyframes } from "./src/components/GlowingButton/Animations";
 
 const config: Config = {
   content: [
@@ -20,24 +22,14 @@ const config: Config = {
       },
       animation: {
         tilt: "tilt 5s infinite linear",
-        "backdrop-blur-in": "backdropBlurIn 0.5s ease-in-out forwards",
+        "backdrop-fade-in": "backdropFadeIn 0.2s ease-out forwards .1s",
+        "backdrop-fade-out": "backdropFadeOut 0.2s ease-out forwards .1s",
+        "unfold-y": "unfoldY .1s linear",
+        "fold-y": "foldY .1s linear forwards",
       },
       keyframes: {
-        tilt: {
-          "0%, 50%, 100%": {
-            transform: "rotate(0deg)",
-          },
-          "25%": {
-            transform: "rotate(1deg)",
-          },
-          "75%": {
-            transform: "rotate(-1deg)",
-          },
-        },
-        backdropBlurIn: {
-          "0%": { backdropFilter: "blur(0)" },
-          "100%": { backdropFilter: "blur(4px)" }, // Ajusta el valor según tu necesidad
-        },
+        ...modalKeyframes,
+        ...glowingButtonKeyframes,
       },
     },
   },
