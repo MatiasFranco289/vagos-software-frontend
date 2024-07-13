@@ -5,8 +5,12 @@ import logo from "../../../public/logo.png";
 import { loginSchema } from "@/validations/LoginValidations";
 import { ErrorMessage } from "formik";
 import Modal from "@/components/Modal/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GlowingButton from "@/components/GlowingButton/GlowingButton";
+
+// TODO: En resoluciones mas chicas las letras de los mensajes de error se rompen
+// TODO: El popUp se rompe en resoluciones mas chicas
+// TODO: Crear endpoint de postman y simular conexion
 
 export default function Login() {
   interface UserCredentials {
@@ -14,12 +18,17 @@ export default function Login() {
     password: string;
   }
 
+  const [isLoaded, setIsLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tryLogin = (formValues: UserCredentials) => {
     //TODO: Pegarle al endpoint de logeo aca
     // Si hay un error abre el modal de error
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    setIsLoaded(true);
+  });
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -32,7 +41,7 @@ export default function Login() {
         onSubmit={tryLogin}
       >
         {({ errors, touched, resetForm }) => (
-          <div className="sm:w-[300px] xl:w-[400px] h-[525px] relative">
+          <div className="sm:w-[300px] xl:w-[400px] w-[250px] h-[525px] relative">
             <Modal
               title="Credenciales incorrectas"
               icon="DANGER"
@@ -42,9 +51,21 @@ export default function Login() {
               setIsModalOpen={setIsModalOpen}
             />
 
-            <div className="w-full h-full absolute bg-black rounded-md blur-xl"></div>
+            {/* Neon effect */}
+            <div
+              className="w-[100%] h-[100%]  
+            absolute blur-sm overflow-hidden"
+            >
+              <div
+                className={`w-[250%] xl:w-[200%] aspect-square absolute
+              bg-gradient-to-b translate from-red-500 to-white via-orange-500
+               top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-absolute-spin
+               ${isLoaded ? "animate-absolute-spin" : "animate-absolute-unfold"}
+              `}
+              />
+            </div>
 
-            <Form className="bg-dark-300 p-6 rounded-md h-full z-10 relative">
+            <Form className="bg-dark-300 p-6 rounded-md h-full z-10 relative animate-unfold-step-by-step">
               <div className=" w-full flex justify-center">
                 <Image src={logo} alt="vagosLogo.png" className="w-2/6" />
               </div>
