@@ -20,6 +20,7 @@ const config: Config = {
       },
       animation: {
         tilt: "tilt 5s infinite linear",
+        "backdrop-blur-in": "backdropBlurIn 0.5s ease-in-out forwards",
       },
       keyframes: {
         tilt: {
@@ -32,6 +33,10 @@ const config: Config = {
           "75%": {
             transform: "rotate(-1deg)",
           },
+        },
+        backdropBlurIn: {
+          "0%": { backdropFilter: "blur(0)" },
+          "100%": { backdropFilter: "blur(4px)" }, // Ajusta el valor según tu necesidad
         },
       },
     },

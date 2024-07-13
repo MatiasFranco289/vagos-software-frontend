@@ -4,6 +4,9 @@ import Image from "next/image";
 import logo from "../../../public/logo.png";
 import { loginSchema } from "@/validations/LoginValidations";
 import { ErrorMessage } from "formik";
+import Modal from "@/components/Modal";
+import { useState } from "react";
+import GlowingButton from "@/components/GlowingButton";
 
 export default function Login() {
   interface UserCredentials {
@@ -11,7 +14,12 @@ export default function Login() {
     password: string;
   }
 
-  const tryLogin = (formValues: UserCredentials) => {};
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const tryLogin = (formValues: UserCredentials) => {
+    //TODO: Pegarle al endpoint de logeo aca
+    // Si hay un error abre el modal de error
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -25,6 +33,15 @@ export default function Login() {
       >
         {({ errors, touched, resetForm }) => (
           <div className="sm:w-[300px] xl:w-[400px] h-[525px] relative">
+            <Modal
+              title="Credenciales incorrectas"
+              icon="DANGER"
+              message="Credenciales incorrectas. Por favor, verifique que tanto su usuario como contraseña sean correctos."
+              buttonText="Entendido"
+              isOpen={isModalOpen}
+              setIsModalOpen={setIsModalOpen}
+            />
+
             <div className="w-full h-full absolute bg-black rounded-md blur-xl"></div>
 
             <Form className="bg-dark-300 p-6 rounded-md h-full z-10 relative">
@@ -83,19 +100,7 @@ export default function Login() {
 
               {/* Send button */}
               <div className="flex justify-center mb-2 group">
-                <div className="w-5/6 relative">
-                  <button
-                    className="text-white rounded-md p-2 w-full border-[1px] duration-200 relative z-10
-                 bg-dark-100 group-hover:text-orange-500 group-hover:border-orange-500 hover:glow-text"
-                  >
-                    Conectarse
-                  </button>
-
-                  <button
-                    className="rounded-md w-full absolute top-0 left-0 h-full z-0 blur-sm bg-gradient-to-r
-                 from-red-500 to-orange-600 opacity-30 group-hover:opacity-100 duration-300 group-hover:blur-md animate-tilt"
-                  />
-                </div>
+                <GlowingButton text="Conectarse" type="submit" />
               </div>
             </Form>
           </div>
