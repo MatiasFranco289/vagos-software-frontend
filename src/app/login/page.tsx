@@ -7,23 +7,31 @@ import { ErrorMessage } from "formik";
 import Modal from "@/components/Modal/Modal";
 import { useEffect, useState } from "react";
 import GlowingButton from "@/components/GlowingButton/GlowingButton";
+import { axiosInstance } from "@/constants";
+import { getEnvironmentVariable } from "@/utils";
 
-// TODO: En resoluciones mas chicas las letras de los mensajes de error se rompen
-// TODO: El popUp se rompe en resoluciones mas chicas
 // TODO: Crear endpoint de postman y simular conexion
-
+// TODO: Agregar documentacion y env_example
 export default function Login() {
   interface UserCredentials {
     username: string;
     password: string;
   }
 
+  const apiBaseUrl = getEnvironmentVariable("NEXT_PUBLIC_BACKEND_BASE_URL");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const tryLogin = (formValues: UserCredentials) => {
-    //TODO: Pegarle al endpoint de logeo aca
-    // Si hay un error abre el modal de error
-    setIsModalOpen(true);
+    axiosInstance
+      .post(`${apiBaseUrl}/api/v1/login`, formValues)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err.message); // TODO: Mejorar este menasje
+        setIsModalOpen(true);
+      });
   };
 
   useEffect(() => {
@@ -41,7 +49,7 @@ export default function Login() {
         onSubmit={tryLogin}
       >
         {({ errors, touched, resetForm }) => (
-          <div className="sm:w-[300px] xl:w-[400px] w-[250px] h-[525px] relative">
+          <div className="sm:w-[300px] xl:w-[400px] w-[250px] h-[600px] sm:h-[525px] relative">
             <Modal
               title="Credenciales incorrectas"
               icon="DANGER"
@@ -57,7 +65,7 @@ export default function Login() {
             absolute blur-sm overflow-hidden"
             >
               <div
-                className={`w-[250%] xl:w-[200%] aspect-square absolute
+                className={`w-[260%] xl:w-[200%] aspect-square absolute
               bg-gradient-to-b translate from-red-500 to-white via-orange-500
                top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-absolute-spin
                ${isLoaded ? "animate-absolute-spin" : "animate-absolute-unfold"}
@@ -92,9 +100,9 @@ export default function Login() {
                   <ErrorMessage
                     name="username"
                     component="div"
-                    className="text-red-600 absolute bottom-0"
+                    className="text-red-600 absolute bottom-0 text-sm"
                   />
-                  <div className="h-[15px]" />
+                  <div className="h-[36px] xl:h-[15px]" />
                 </div>
                 {/* Password field */}
                 <div className="flex flex-col py-3 relative">
@@ -115,7 +123,7 @@ export default function Login() {
                     component="div"
                     className="text-red-600 absolute bottom-0"
                   />
-                  <div className="h-[15px]" />
+                  <div className="h-[36px] xl:h-[15px]" />
                 </div>
               </div>
 

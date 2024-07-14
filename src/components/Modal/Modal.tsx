@@ -47,7 +47,7 @@ export default function Modal({
         }`}
       >
         <div
-          className={`bg-dark-100 text-center w-[500px] p-6 rounded-md ${
+          className={`bg-dark-100 text-center w-[280px] sm:w-[500px] p-6 rounded-md ${
             isOpen ? "animate-unfold-y" : "animate-fold-y"
           }`}
         >
