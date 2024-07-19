@@ -7,36 +7,69 @@ import { ErrorMessage } from "formik";
 import Modal from "@/components/Modal/Modal";
 import { useEffect, useState } from "react";
 import GlowingButton from "@/components/GlowingButton/GlowingButton";
-import { axiosInstance } from "@/constants";
+import { ROLENAME, STATUS_CODE_UNAUTHORIZED, USERNAME } from "@/constants";
+import axiosInstance from "@/axios";
 import { getEnvironmentVariable } from "@/utils";
+import { User } from "@/interfaces";
+import { ApiResponse } from "@/interfaces";
+import { AxiosResponse } from "axios";
+import { useRouter } from "next/navigation";
 
-// TODO: Crear endpoint de postman y simular conexion
-// TODO: Agregar documentacion y env_example
 export default function Login() {
   interface UserCredentials {
     username: string;
     password: string;
   }
 
+  const router = useRouter();
   const apiBaseUrl = getEnvironmentVariable("NEXT_PUBLIC_BACKEND_BASE_URL");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalInfo, setModalInfo] = useState({
+    title: "",
+    message: "",
+  });
 
   const tryLogin = (formValues: UserCredentials) => {
     axiosInstance
-      .post(`${apiBaseUrl}/api/v1/login`, formValues)
-      .then((data) => {
-        console.log(data);
+      .post(`${apiBaseUrl}/api/auth/login`, formValues)
+      .then((response: AxiosResponse<ApiResponse<User>, UserCredentials>) => {
+        localStorage.setItem(USERNAME, response.data.data[0].username);
+        localStorage.setItem(ROLENAME, response.data.data[0].role.rolename);
+        router.push("/");
       })
       .catch((err) => {
-        console.log(err.message); // TODO: Mejorar este menasje
+        const statusCode: number = err.response.status;
+
+        if (statusCode == STATUS_CODE_UNAUTHORIZED) {
+          setModalInfo({
+            title: "Credenciales incorrectas",
+            message: `Credenciales incorrectas. Por favor, 
+            verifique que tanto su usuario como contraseña sean correctos`,
+          });
+        } else {
+          setModalInfo({
+            title: "Error inesperado",
+            message:
+              "Ha ocurrido un error inesperado. Por favor intente nuevamente.",
+          });
+        }
+
+        console.error(`The following error has ocurred while trying to login:
+          ${err.response.data.message || err.message}`);
+
         setIsModalOpen(true);
       });
   };
 
   useEffect(() => {
+    // If you are already loged in i redirect you to the previous page
+    if (localStorage.getItem(USERNAME)) {
+      router.back();
+    }
+
     setIsLoaded(true);
-  });
+  }, []);
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -49,11 +82,11 @@ export default function Login() {
         onSubmit={tryLogin}
       >
         {({ errors, touched, resetForm }) => (
-          <div className="sm:w-[300px] xl:w-[400px] w-[250px] h-[600px] sm:h-[525px] relative">
+          <div className="sm:w-[300px] xl:w-[400px] w-[250px] h-[500px] sm:h-[525px] relative">
             <Modal
-              title="Credenciales incorrectas"
+              title={modalInfo.title}
               icon="DANGER"
-              message="Credenciales incorrectas. Por favor, verifique que tanto su usuario como contraseña sean correctos."
+              message={modalInfo.message}
               buttonText="Entendido"
               isOpen={isModalOpen}
               setIsModalOpen={setIsModalOpen}
@@ -82,7 +115,7 @@ export default function Login() {
                 <h2 className="font-semibold text-2xl">Ingresá a tu cuenta</h2>
               </div>
 
-              <div className="py-8">
+              <div className="sm:py-8 py-3">
                 {/* Username field */}
                 <div className="flex flex-col py-3 relative">
                   <label htmlFor="username" className="font-medium mb-1">
@@ -102,7 +135,7 @@ export default function Login() {
                     component="div"
                     className="text-red-600 absolute bottom-0 text-sm"
                   />
-                  <div className="h-[36px] xl:h-[15px]" />
+                  <div className="sm:h-[15px] h-[30px]" />
                 </div>
                 {/* Password field */}
                 <div className="flex flex-col py-3 relative">
@@ -121,9 +154,9 @@ export default function Login() {
                   <ErrorMessage
                     name="password"
                     component="div"
-                    className="text-red-600 absolute bottom-0"
+                    className="text-red-600 absolute bottom-0 text-sm"
                   />
-                  <div className="h-[36px] xl:h-[15px]" />
+                  <div className="sm:h-[15px] h-[30px]" />
                 </div>
               </div>
 
