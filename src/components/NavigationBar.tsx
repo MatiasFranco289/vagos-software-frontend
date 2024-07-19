@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 
 export default function NavigationBar() {
   const pathname = usePathname();
-  console.log(pathname);
+
   return (
     (pathname === "/login" && <div></div>) || (
       <div>
