@@ -1,5 +1,6 @@
-import { EnvironmentVariables } from "./constants";
-import { EnvVars } from "./interfaces";
+import { EnvironmentVariables, ROLENAME } from "./constants";
+import { EnvVars, User } from "./interfaces";
+import { USERNAME } from "./constants";
 
 // In the 'constants' file exist a dictionary containing the environment variables
 // but they can be string or null. This function throws error if the requested
