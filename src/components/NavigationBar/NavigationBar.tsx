@@ -1,25 +1,21 @@
+// This is the navigation bar component
+// depending on the resolution it uses the PcNavigationBar component or the
+// MobileNavigationBar component
 "use client";
 import { usePathname } from "next/navigation";
 import PcNavigationBar from "./PcNavigationBar";
 import MobileNavigationBar from "./MobileNavigationBar";
 import { useEffect, useState } from "react";
 import { ROLENAME, USERNAME } from "@/constants";
+import { UserInfo } from "@/interfaces";
+import { PAGES_URLS } from "@/constants";
 
 export default function NavigationBar() {
-  const [userInfo, setUserInfo] = useState({
+  const [userInfo, setUserInfo] = useState<UserInfo>({
     username: "",
     rolename: "",
   });
 
-  const urls = {
-    // TODO: Mover esto a constants
-    home: "/",
-    projects: "/projects",
-    blogs: "/blogs",
-    about: "/about-us",
-    profile: "/profile",
-    login: "/login",
-  };
   const pathname = usePathname();
 
   useEffect(() => {
@@ -32,9 +28,13 @@ export default function NavigationBar() {
   return (
     (pathname === "/login" && <div></div>) || (
       <div className="w-full fixed sm:absolute sm:top-0 sm:bottom-100 top-100 bottom-0 h-[80px]">
-        <PcNavigationBar urls={urls} pathname={pathname} userInfo={userInfo} />
+        <PcNavigationBar
+          urls={PAGES_URLS}
+          pathname={pathname}
+          userInfo={userInfo}
+        />
         <MobileNavigationBar
-          urls={urls}
+          urls={PAGES_URLS}
           pathname={pathname}
           userInfo={userInfo}
         />

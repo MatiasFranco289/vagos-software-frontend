@@ -1,19 +1,16 @@
-// This is the navigation bar showed when resolution is greater than x
+// This is the navigation bar for pc, showed when resolution is greater than x
 import Link from "next/link";
 import Image from "next/image";
 import vagosLogo from "../../../public/logo.png";
 import defaultPfp from "../../../public/default-pfp.jpeg";
 import { useRouter } from "next/navigation";
 import GlowingButton from "../GlowingButton/GlowingButton";
-import { PagesUrl } from "@/interfaces";
+import { PagesUrl, UserInfo } from "@/interfaces";
 
 interface PcNavigationBarProps {
   urls: PagesUrl;
   pathname: string;
-  userInfo: {
-    username: string;
-    rolename: string;
-  };
+  userInfo: UserInfo;
 }
 
 export default function PcNavigationBar({

@@ -1,21 +1,16 @@
+// This is the navigation bar for mobile devices, showed when resolution is lower than x
 import { IoHomeOutline } from "react-icons/io5";
 import { GrProjects } from "react-icons/gr";
 import { GrBlog } from "react-icons/gr";
 import { GoOrganization } from "react-icons/go";
 import { CiUser } from "react-icons/ci";
 import Link from "next/link";
-import { PagesUrl } from "@/interfaces";
+import { PagesUrl, UserInfo } from "@/interfaces";
 
 interface MobileNavigationBarProps {
   urls: PagesUrl;
   pathname: string;
-  userInfo: {
-    // TODO: Esto se deberia pasar a una interfaz o no?
-    // TODO: Documentar para que sirve cada componente de estos
-    // TODO: Definir cual sera la estructura de un usuario, tanto por parte del cliente como en el cliente
-    username: string;
-    rolename: string;
-  };
+  userInfo: UserInfo;
 }
 
 export default function MobileNavigationBar({
