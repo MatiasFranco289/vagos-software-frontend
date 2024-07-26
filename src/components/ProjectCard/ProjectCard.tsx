@@ -7,32 +7,39 @@ export default function ProjectCard() {
     );
   };
   return (
-    <div className="bg-dark-100 w-[400px] flex m-6 rounded-md p-4 relative overflow-hidden">
-      {/* Project status */}
-      <div className="absolute top-0 left-0 bg-green-600 p-1 rounded-r-md">
-        <p>Activo</p>
-      </div>
+    <div className="bg-dark-100 w-[400px] m-6 relative">
+      <div
+        className="absolute w-full h-full rounded-md blur-sm bg-gradient-to-tr 
+      from-red-500 to-white via-orange-500"
+      />
 
-      {/* Left side */}
-      <div className="w-2/6 mr-6 flex items-center">
-        <div className="bg-dark-300 w-full aspect-square rounded-full overflow-hidden">
-          {/* Project thumbnail goes here */}
-        </div>
-      </div>
-
-      {/* Right side */}
-      <div className="w-4/6 space-y-6 flex flex-col items-center">
-        {/* Titles */}
-        <div className="">
-          <h2 className="text-3xl font-semibold">Project title</h2>
-          <h4 className="text-sm font-thin">21/07/2024 - 21/07/2024</h4>
+      <div className="w-full flex p-4 z-10 relative bg-dark-100 rounded-md overflow-hidden">
+        {/* Project status */}
+        <div className="absolute top-0 left-0 bg-green-600 p-1 rounded-r-md">
+          <p>Activo</p>
         </div>
 
-        <div className="flex flex-wrap justify-center">
-          {TagCard("2D")}
-          {TagCard("Metroidvania")}
-          {TagCard("Roguelike")}
-          {TagCard("Action")}
+        {/* Left side */}
+        <div className="w-2/6 mr-6 flex items-center">
+          <div className="bg-dark-300 w-full aspect-square rounded-full overflow-hidden">
+            {/* Project thumbnail goes here */}
+          </div>
+        </div>
+
+        {/* Right side */}
+        <div className="w-4/6 space-y-6 flex flex-col items-center">
+          {/* Titles */}
+          <div className="">
+            <h2 className="text-3xl font-semibold">Project title</h2>
+            <h4 className="text-sm font-thin">21/07/2024 - 21/07/2024</h4>
+          </div>
+
+          <div className="flex flex-wrap justify-center">
+            {TagCard("2D")}
+            {TagCard("Metroidvania")}
+            {TagCard("Roguelike")}
+            {TagCard("Action")}
+          </div>
         </div>
       </div>
     </div>
