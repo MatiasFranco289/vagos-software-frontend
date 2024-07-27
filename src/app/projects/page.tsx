@@ -20,13 +20,38 @@ export default function Projects() {
             </div>
 
             <div className="w-2/6 flex justify-around">
-              <CustomSelect>
-                <CustomOption value="asd" default={true}>
-                  sexo
+              <CustomSelect multiple>
+                <CustomOption value="filter" disabled default>
+                  Filtrar
                 </CustomOption>
-                <CustomOption value="asd2">sexooo</CustomOption>
+                <CustomOption value="2d">2D</CustomOption>
+                <CustomOption value="3d" default>
+                  3D
+                </CustomOption>
+                <CustomOption value="metroidvania">Metroidvania</CustomOption>
               </CustomSelect>
             </div>
+
+            <div className="w-2/6 flex justify-around">
+              <CustomSelect>
+                <CustomOption value="filter" default disabled>
+                  Ordenar por
+                </CustomOption>
+                <CustomOption value="AZ">A-Z</CustomOption>
+                <CustomOption value="ZA">Z-A</CustomOption>
+                <CustomOption value="DATE_ASC">Mas reciente</CustomOption>
+                <CustomOption value="DATE_DESC">Mas antiguo</CustomOption>
+              </CustomSelect>
+            </div>
+
+            <select name="" id="" className="bg-dark-100">
+              <option value="" defaultChecked disabled>
+                Opcion 1
+              </option>
+              <option value="">Opcion 2</option>
+              <option value="">Opcion 3</option>
+              <option value="">Opcion 4</option>
+            </select>
           </div>
         </div>
 
