@@ -1,43 +1,47 @@
 "use client";
-import { ReactNode } from "react";
+import {
+  CustomOptionProps,
+  CustomizableStyles,
+} from "@/components/CustomSelect/interfaces";
 
-interface CustomOptionProps {
-  children: ReactNode;
-  value: string;
-  default?: boolean;
-  onClickCallback?: (optionValue?: string, optionText?: string) => void;
-  isSelected?: boolean;
-  disabled?: boolean;
-  defaultSelected?: boolean;
-}
+const defaultStyles: CustomizableStyles = {
+  base: "p-2 rounded-md duration-100",
+  selected: "text-orange-500 glow-text",
+  hover: "hover:bg-dark-400",
+  active: "cursor-pointer text-white",
+  disabled: "text-gray-500 cursor-default",
+};
 
-// TODO: Agregar comprobacion de que children sea un string
-export default function CustomOption({
+export default function CustomSelect({
   children,
-  value,
-  default: defaultValue = false,
+  value: value = "",
+  isDefault: isDefault = false,
+  isDefaultSelected: isDefaultSelected = false,
+  isDisabled: isDisabled = false,
+  isSelected: isSelected = false,
   onClickCallback,
-  isSelected,
-  disabled,
+  styles: styles = defaultStyles,
 }: CustomOptionProps) {
   const handleOnClick = () => {
     if (onClickCallback) {
-      onClickCallback(value, children?.toString());
+      onClickCallback(value);
     }
   };
 
+  if (isDisabled && isDefaultSelected) {
+    throw new Error("Disabled options cannot be default selected");
+  }
+
   return (
-    (!disabled && (
+    (!isDisabled && (
       <p
-        className={`p-2 hover:bg-dark-400 rounded-md duration-100 cursor-pointer ${
-          isSelected && "text-orange-500 glow-text"
+        className={`${styles.base} ${styles.hover} ${styles.active} ${
+          isSelected && styles.selected
         }`}
         onClick={handleOnClick}
       >
         {children}
       </p>
-    )) || (
-      <p className="p-2 rounded-md text-gray-500 cursor-default">{children}</p>
-    )
+    )) || <p className={`${styles.base} ${styles.disabled}`}>{children}</p>
   );
 }

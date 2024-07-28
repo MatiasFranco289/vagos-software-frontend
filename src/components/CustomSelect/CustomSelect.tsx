@@ -1,145 +1,62 @@
 "use client";
-import { useState, useRef, useEffect, ReactElement, ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  getLongestOption,
+  getExtendedCustomOptions,
+  toggleOptionsContainerVisibility,
+  getCustomSelectText,
+  getOptionsSelectedByDefault,
+  handleOptionClicked,
+  showCustomSelectText,
+  validations,
+} from "./customSelectUtils";
+import { CustomSelectProps } from "./interfaces";
 import { IoIosArrowDown } from "react-icons/io";
 import React from "react";
-// TODO: Hacer que se pueda seleccionar una sola opcion
-type SelectOption = {
-  value: string;
-  children: string;
-  default: boolean;
-  defaultSelected: boolean;
-};
-
-interface CustomSelectProps {
-  children: ReactElement<SelectOption> | ReactElement<SelectOption>[];
-  multiple?: boolean;
-}
 
 export default function CustomSelect({
   children,
-  multiple,
+  multiple: multiple = false,
 }: CustomSelectProps) {
-  const options = Array.isArray(children)
-    ? children.map((option) => {
-        return {
-          value: option.props.value,
-          text: option.props.children,
-          default: option.props.default || false,
-          defaultSelected: option.props.defaultSelected,
-        };
-      })
-    : {
-        value: children.props.value,
-        text: children.props.children,
-        default: children.props.default || false,
-        defaultSelected: children.props.defaultSelected,
-      };
+  const selectRef = useRef(null); // This is a ref to the select itself
+  const optionsContainerRef = useRef(null); // This is a ref to the container with all the options
 
-  // This is the text showed in the select
-  const defaultOption = Array.isArray(options)
-    ? options.find((option) => option.default) || options[0]
-    : options;
+  const [isOptionsMenuOpen, setOptionsMenuOpen] = useState(false); // This manages the visibility of the CustomOptions container
+  const isOptionsMenuOpenRef = useRef(isOptionsMenuOpen); // Reference necessary to keep the value updated in 'toggleOptionsContainerVisibility' function
 
-  const defaultSelectedItems = Array.isArray(options)
-    ? options
-        .filter((option) => option.defaultSelected)
-        .map((option) => option.value)
-    : (options.defaultSelected && [options.value]) || [];
+  const customSelectText = getCustomSelectText(children); // The text showed in the select by default
+  const [selectedOptions, setSelectedOptions] = useState<Array<string | null>>(
+    getOptionsSelectedByDefault(children)
+  ); // This array will save the value of all selected options
 
-  // If there are items defined as 'defaultSelected' but the CustomSelect is not of type 'multiple'
-  // an error will be throwed because in no multiple selects the default items is the only one default selected
-  if (defaultSelectedItems.length && !multiple) {
-    throw new Error(`CustomSelect component must be of type 'multiple' to support default selected items. 
-        Single option selects can only have one default option setted by using 'default'.`);
-  }
-
-  const [isOpen, setOpen] = useState(false);
-
-  const [selectedItems, setSelectedItems] = useState(
-    (defaultSelectedItems.length && defaultSelectedItems) || [
-      defaultOption.value,
-    ]
-  );
-
-  const selectRef = useRef<HTMLDivElement>(null);
-  const optionsContainerRef = useRef<HTMLDivElement>(null);
-  const isOpenRef = useRef(isOpen);
-
+  // Event listener with callback function to manage the options menu status
   useEffect(() => {
-    document.addEventListener("mousedown", toggleDropDown);
+    validations.forEach((validation) => {
+      validation(children, multiple);
+    });
+
+    const handleMouseDown = (event: MouseEvent) => {
+      toggleOptionsContainerVisibility(
+        event,
+        selectRef,
+        optionsContainerRef,
+        isOptionsMenuOpenRef,
+        setOptionsMenuOpen
+      );
+    };
+
+    document.addEventListener("mousedown", handleMouseDown);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+    };
   }, []);
 
+  // Every time the value of 'isOptionsMenuOpen' changes i updated the reference
   useEffect(() => {
-    isOpenRef.current = isOpen;
-  }, [isOpen]);
-
-  const renderizeOptions = () => {
-    if (Array.isArray(children)) {
-      return children.map((option, index) => {
-        const isItemSelected = selectedItems.includes(option.props.value);
-
-        return React.cloneElement(option as React.ReactElement, {
-          onClickCallback: handleOptionClicked,
-          isSelected: isItemSelected,
-          key: `custom_option_${index}`,
-        });
-      });
-    } else {
-      return children;
-    }
-  };
-
-  const handleOptionClicked = (optionValue?: string, optionText?: string) => {
-    if (!optionValue) return null;
-
-    if (multiple) {
-      const newSelectedItems = selectedItems;
-      const indexOfNewSelectedItem = newSelectedItems.indexOf(optionValue);
-
-      // If item was not selected i add it
-      if (indexOfNewSelectedItem === -1) {
-        newSelectedItems.push(optionValue);
-      } else {
-        // If item already is selected i remove it from the selected items list
-        newSelectedItems.splice(indexOfNewSelectedItem, 1);
-      }
-
-      setSelectedItems([...newSelectedItems]);
-    } else {
-      setSelectedItems([optionValue]);
-      setOpen(false);
-    }
-  };
-
-  const toggleDropDown = (event: MouseEvent) => {
-    // If you touch the select and it its closed
-    if (
-      !isOpenRef.current &&
-      selectRef.current?.contains(event.target as Node)
-    ) {
-      setOpen(true);
-    } else if (
-      // If select is open and you touch outside the options container
-      isOpenRef.current &&
-      !optionsContainerRef.current?.contains(event.target as Node)
-    ) {
-      setOpen(false);
-    }
-  };
-
-  const getLongestOption = () => {
-    let longestOption;
-
-    if (Array.isArray(options)) {
-      longestOption = options.reduce((longest, current) => {
-        return current.text.length > longest.text.length ? current : longest;
-      }, options[0]);
-    } else {
-      longestOption = options;
-    }
-
-    return longestOption.text;
-  };
+    isOptionsMenuOpenRef.current = isOptionsMenuOpen;
+  }, [isOptionsMenuOpen]);
 
   return (
     <div className="bg-dark-100 p-2 rounded-sm cursor-pointer relative">
@@ -149,17 +66,28 @@ export default function CustomSelect({
       />
 
       <div className="flex items-center space-x-2">
-        <p className="opacity-0 mr-6">{getLongestOption()}</p>
-        <p className="absolute left-0">{defaultOption?.text}</p>
+        <p className="opacity-0 mr-6">{getLongestOption(children)}</p>
+        <p className="absolute left-0">
+          {showCustomSelectText(
+            customSelectText,
+            multiple,
+            children,
+            selectedOptions
+          )}
+        </p>
         <IoIosArrowDown className="absolute right-[10px]" />
       </div>
 
       <div
         className={`absolute top-100 left-0 bg-dark-200 z-50 w-full p-1 rounded-md mt-2 whitespace-nowrap
-        ${isOpen ? "block" : "hidden"}`}
+        ${isOptionsMenuOpen ? "block" : "hidden"}`}
         ref={optionsContainerRef}
       >
-        {renderizeOptions()}
+        {getExtendedCustomOptions(
+          children,
+          selectedOptions,
+          handleOptionClicked(selectedOptions, setSelectedOptions, multiple)
+        )}
       </div>
     </div>
   );
