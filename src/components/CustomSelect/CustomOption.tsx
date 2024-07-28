@@ -12,19 +12,31 @@ const defaultStyles: CustomizableStyles = {
   disabled: "text-gray-500 cursor-default",
 };
 
+// This component represents an option
+// It is designed ot be used inside CustomSelect component as child of it
+// It receives the following parameters:
+
+// children: The text showed in the option, must be passed between tags <CustomOption/>text here<CustomOption>
+// value: string containing the value of this option
+// isDefault: If setted to true, the text of this option will be showed by default in the CustomSelect but this not means the option will be selected
+// isDefaultSelected: If setted to true this option will be selected by default
+// isDisabled: If setted to true this option will be disabled and could not be selected
+// styles: You can pass custom styles here by following the interface 'CustomizableStyles'
+
+// props starting with _ are only for internal use
 export default function CustomSelect({
   children,
   value: value = "",
   isDefault: isDefault = false,
   isDefaultSelected: isDefaultSelected = false,
   isDisabled: isDisabled = false,
-  isSelected: isSelected = false,
-  onClickCallback,
+  _isSelected: isSelected = false,
+  _onClickCallback,
   styles: styles = defaultStyles,
 }: CustomOptionProps) {
   const handleOnClick = () => {
-    if (onClickCallback) {
-      onClickCallback(value);
+    if (_onClickCallback) {
+      _onClickCallback(value);
     }
   };
 

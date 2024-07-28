@@ -1,9 +1,14 @@
+"use client";
 import ProjectCard from "@/components/ProjectCard/ProjectCard";
 import { FaSearch } from "react-icons/fa";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import CustomOption from "@/components/CustomSelect/CustomOption";
 
 export default function Projects() {
+  const onOptionSelected = (selectedOptionsValue: Array<string | null>) => {
+    console.log(selectedOptionsValue);
+  };
+
   return (
     <div className="w-full min-h-screen flex justify-center">
       <div className="bg-dark-300 w-5/6 mt-[100px] p-6">
@@ -20,8 +25,8 @@ export default function Projects() {
             </div>
 
             <div className="w-2/6 flex justify-around">
-              <CustomSelect>
-                <CustomOption value="sex" isDisabled>
+              <CustomSelect onOptionSelected={onOptionSelected}>
+                <CustomOption value="asd" isDisabled>
                   Filtrar
                 </CustomOption>
                 <CustomOption value="a1">a1</CustomOption>

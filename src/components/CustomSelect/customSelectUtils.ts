@@ -3,6 +3,15 @@ import React from "react";
 
 export const validations = [
   (options: CustomSelectChildrens, _isMultiple: boolean) => {
+    if (!options) {
+      throw new Error(
+        `CustomSelect component must have at least one CustomOption component as child`
+      );
+    }
+
+    return true;
+  },
+  (options: CustomSelectChildrens, _isMultiple: boolean) => {
     if (!Array.isArray(options)) return true;
 
     const optionsWithIsDefaultTrue = options.filter(
@@ -82,8 +91,8 @@ export const getExtendedCustomOptions = (
         {
           ...option.props,
           key: `custom_option_${index}`,
-          isSelected: selectedOptions.includes(option.props.value),
-          onClickCallback: onOptionClicked,
+          _isSelected: selectedOptions.includes(option.props.value),
+          _onClickCallback: onOptionClicked,
         }
       );
     });
@@ -94,8 +103,8 @@ export const getExtendedCustomOptions = (
       {
         ...options.props,
         key: `custom_option_1`,
-        isSelected: selectedOptions.includes(options.props.value),
-        onClickCallback: onOptionClicked,
+        _isSelected: selectedOptions.includes(options.props.value),
+        _onClickCallback: onOptionClicked,
       }
     );
   }
@@ -173,7 +182,8 @@ export const handleOptionClicked =
   (
     selectedOptions: Array<string | null>,
     setSelectedOptions: React.Dispatch<React.SetStateAction<(string | null)[]>>,
-    isMultiple: boolean
+    isMultiple: boolean,
+    onOptionClickedCallback: (selectedOptionValue: Array<string | null>) => void
   ) =>
   (value: string) => {
     const indexOfNewValue = selectedOptions.indexOf(value);
@@ -191,6 +201,7 @@ export const handleOptionClicked =
       }
     }
 
+    onOptionClickedCallback(selectedOptionsDuplicate);
     setSelectedOptions([...selectedOptionsDuplicate]);
   };
 

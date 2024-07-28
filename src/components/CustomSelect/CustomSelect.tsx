@@ -14,10 +14,25 @@ import { CustomSelectProps } from "./interfaces";
 import { IoIosArrowDown } from "react-icons/io";
 import React from "react";
 
+// This component is a CustomSelect
+// It should have CustomOptions component as childs
+// If the option 'multiple' it's specified, multiple CustomOptions can be selected at once
+
+// onOptionSelected is an optional callback that will be invoked every time a CustomOption is clicked
+// this callback function must have a parameter being Array<string | null> that will be used to pass the
+// value of the current selected CustomOption components
 export default function CustomSelect({
   children,
   multiple: multiple = false,
+  onOptionSelected: onOptionSelected = (
+    selectedOptionsValue: Array<string | null>
+  ) => {},
 }: CustomSelectProps) {
+  // I run all the validations before do something
+  validations.forEach((validation) => {
+    validation(children, multiple);
+  });
+
   const selectRef = useRef(null); // This is a ref to the select itself
   const optionsContainerRef = useRef(null); // This is a ref to the container with all the options
 
@@ -31,10 +46,6 @@ export default function CustomSelect({
 
   // Event listener with callback function to manage the options menu status
   useEffect(() => {
-    validations.forEach((validation) => {
-      validation(children, multiple);
-    });
-
     const handleMouseDown = (event: MouseEvent) => {
       toggleOptionsContainerVisibility(
         event,
@@ -46,6 +57,9 @@ export default function CustomSelect({
     };
 
     document.addEventListener("mousedown", handleMouseDown);
+
+    // When the component is initializated i use the callback method to informate the actual selecte values
+    onOptionSelected(selectedOptions);
 
     // Cleanup the event listener when the component unmounts
     return () => {
@@ -86,7 +100,12 @@ export default function CustomSelect({
         {getExtendedCustomOptions(
           children,
           selectedOptions,
-          handleOptionClicked(selectedOptions, setSelectedOptions, multiple)
+          handleOptionClicked(
+            selectedOptions,
+            setSelectedOptions,
+            multiple,
+            onOptionSelected
+          )
         )}
       </div>
     </div>

@@ -18,9 +18,9 @@ export interface CustomOptionProps {
   isDefault?: boolean;
   isDefaultSelected?: boolean;
   isDisabled?: boolean;
-  isSelected?: boolean;
+  _isSelected?: boolean;
   styles?: CustomizableStyles;
-  onClickCallback?: (optionValue: string) => void;
+  _onClickCallback?: (optionValue: string) => void;
 }
 
 // childrens of CustomSelect component can be a single component of type 'CustomOption'
@@ -33,4 +33,5 @@ export type CustomSelectChildrens =
 export interface CustomSelectProps {
   children: CustomSelectChildrens;
   multiple?: boolean;
+  onOptionSelected?: (selectedOptionsValue: Array<string | null>) => void;
 }
