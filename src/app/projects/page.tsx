@@ -3,9 +3,10 @@ import ProjectCard from "@/components/ProjectCard/ProjectCard";
 import { FaSearch } from "react-icons/fa";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import CustomOption from "@/components/CustomSelect/CustomOption";
+import { CustomOptionData } from "@/components/CustomSelect/interfaces";
 
 export default function Projects() {
-  const onOptionSelected = (selectedOptionsValue: Array<string | null>) => {
+  const onOptionSelected = (selectedOptionsValue: Array<CustomOptionData>) => {
     console.log(selectedOptionsValue);
   };
 

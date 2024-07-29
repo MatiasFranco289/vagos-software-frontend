@@ -36,7 +36,10 @@ export default function CustomSelect({
 }: CustomOptionProps) {
   const handleOnClick = () => {
     if (_onClickCallback) {
-      _onClickCallback(value);
+      _onClickCallback({
+        value: value,
+        text: children?.toString() || "",
+      });
     }
   };
 

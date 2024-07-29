@@ -1,4 +1,8 @@
-import { CustomOptionProps, CustomSelectChildrens } from "./interfaces";
+import {
+  CustomOptionData,
+  CustomOptionProps,
+  CustomSelectChildrens,
+} from "./interfaces";
 import React from "react";
 
 export const validations = [
@@ -80,8 +84,8 @@ export const getLongestOption = (options: CustomSelectChildrens) => {
 // and returns a list of CustomOption components or a single one, with extra props setted
 export const getExtendedCustomOptions = (
   options: CustomSelectChildrens,
-  selectedOptions: Array<string | null>,
-  onOptionClicked: (value: string) => void
+  selectedOptions: Array<CustomOptionData>,
+  onOptionClicked: (customOptionData: CustomOptionData) => void
 ) => {
   // If there are multiple CustomOptions in the CustomSelect
   if (Array.isArray(options)) {
@@ -91,7 +95,11 @@ export const getExtendedCustomOptions = (
         {
           ...option.props,
           key: `custom_option_${index}`,
-          _isSelected: selectedOptions.includes(option.props.value),
+          _isSelected: selectedOptions
+            .map((option) => {
+              return option.value;
+            })
+            .includes(option.props.value),
           _onClickCallback: onOptionClicked,
         }
       );
@@ -103,7 +111,11 @@ export const getExtendedCustomOptions = (
       {
         ...options.props,
         key: `custom_option_1`,
-        _isSelected: selectedOptions.includes(options.props.value),
+        _isSelected: selectedOptions
+          .map((option) => {
+            return option.value;
+          })
+          .includes(options.props.value),
         _onClickCallback: onOptionClicked,
       }
     );
@@ -154,21 +166,30 @@ export const getCustomSelectText = (options: CustomSelectChildrens) => {
   }
 };
 
-// Iterates over all CustomOptions in the CustomSelect and retrieves all the options values
-// with 'isDefaultSelected' being true. If there are no matches it returns an empty array
+// Iterates over all CustomOptions in the CustomSelect and retrieves all the options values and text
+// following the interface CustomOptionData with 'isDefaultSelected' being true.
+// If there are no matches it returns an empty array
 export const getOptionsSelectedByDefault = (options: CustomSelectChildrens) => {
-  let defaultSelectedOptions: Array<string | null> = [];
+  let defaultSelectedOptions: Array<CustomOptionData> = [];
 
   // If the are multiple CustomOptions
   if (Array.isArray(options)) {
     defaultSelectedOptions = options
       .filter((option) => option.props.isDefaultSelected)
       .map((defaultSelectedOption) => {
-        return defaultSelectedOption.props.value;
+        return {
+          value: defaultSelectedOption.props.value,
+          text: defaultSelectedOption.props.children?.toString() || "",
+        };
       });
   } else {
     if (options.props.isDefaultSelected) {
-      defaultSelectedOptions = [options.props.value];
+      defaultSelectedOptions = [
+        {
+          value: options.props.value,
+          text: options.props.children?.toString() || "",
+        },
+      ];
     }
   }
 
@@ -180,29 +201,34 @@ export const getOptionsSelectedByDefault = (options: CustomSelectChildrens) => {
 // If the value already exist in the array it will be removed
 export const handleOptionClicked =
   (
-    selectedOptions: Array<string | null>,
-    setSelectedOptions: React.Dispatch<React.SetStateAction<(string | null)[]>>,
+    selectedOptions: Array<CustomOptionData>,
+    setSelectedOptions: React.Dispatch<
+      React.SetStateAction<CustomOptionData[]>
+    >,
     isMultiple: boolean,
-    onOptionClickedCallback: (selectedOptionValue: Array<string | null>) => void
+    onOptionClickedCallback: (
+      selectedOptionData: Array<CustomOptionData>
+    ) => void
   ) =>
-  (value: string) => {
-    const indexOfNewValue = selectedOptions.indexOf(value);
+  (newSelectedOptionData: CustomOptionData) => {
     let selectedOptionsDuplicate = selectedOptions;
+    const indexOfNewCustomOption = selectedOptions
+      .map((option) => {
+        return option.value;
+      })
+      .indexOf(newSelectedOptionData.value);
 
-    // If the value of the new selected CustomOption already is in the selectedOptions array it is removed
-    if (indexOfNewValue !== -1) {
-      selectedOptionsDuplicate.splice(indexOfNewValue, 1);
+    // If the option was not already selected
+    if (indexOfNewCustomOption === -1) {
+      selectedOptionsDuplicate.push(newSelectedOptionData);
     } else {
-      // The new value is added
-      if (isMultiple) {
-        selectedOptionsDuplicate.push(value);
-      } else {
-        selectedOptionsDuplicate = [value];
-      }
+      selectedOptionsDuplicate = selectedOptionsDuplicate.filter(
+        (option) => option.value !== newSelectedOptionData.value
+      );
     }
 
-    onOptionClickedCallback(selectedOptionsDuplicate);
     setSelectedOptions([...selectedOptionsDuplicate]);
+    onOptionClickedCallback(selectedOptionsDuplicate);
   };
 
 // This function return the text that will be showed in the select.
@@ -214,7 +240,7 @@ export const showCustomSelectText = (
   customSelectText: string,
   isMultiple: boolean,
   options: CustomSelectChildrens,
-  selectedOptions: Array<string | null>
+  selectedOptions: Array<CustomOptionData> | Array<null>
 ) => {
   // CustomSelect of type multiple only show the default text
   if (isMultiple) return customSelectText;
@@ -224,7 +250,7 @@ export const showCustomSelectText = (
   if (Array.isArray(options)) {
     text =
       options
-        .find((options) => options.props.value == selectedOptions[0])
+        .find((options) => options.props.value == selectedOptions[0]?.value)
         ?.props.children?.toString() || customSelectText;
   } else {
     text = options.props.children?.toLocaleString() || "";

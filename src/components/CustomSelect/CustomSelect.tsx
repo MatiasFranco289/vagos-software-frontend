@@ -10,7 +10,7 @@ import {
   showCustomSelectText,
   validations,
 } from "./customSelectUtils";
-import { CustomSelectProps } from "./interfaces";
+import { CustomOptionData, CustomSelectProps } from "./interfaces";
 import { IoIosArrowDown } from "react-icons/io";
 import React from "react";
 
@@ -25,7 +25,7 @@ export default function CustomSelect({
   children,
   multiple: multiple = false,
   onOptionSelected: onOptionSelected = (
-    selectedOptionsValue: Array<string | null>
+    selectedOptionsValue: Array<CustomOptionData>
   ) => {},
 }: CustomSelectProps) {
   // I run all the validations before do something
@@ -40,9 +40,9 @@ export default function CustomSelect({
   const isOptionsMenuOpenRef = useRef(isOptionsMenuOpen); // Reference necessary to keep the value updated in 'toggleOptionsContainerVisibility' function
 
   const customSelectText = getCustomSelectText(children); // The text showed in the select by default
-  const [selectedOptions, setSelectedOptions] = useState<Array<string | null>>(
-    getOptionsSelectedByDefault(children)
-  ); // This array will save the value of all selected options
+  const [selectedOptions, setSelectedOptions] = useState<
+    Array<CustomOptionData>
+  >(getOptionsSelectedByDefault(children)); // This array will save the value of all selected options
 
   // Event listener with callback function to manage the options menu status
   useEffect(() => {

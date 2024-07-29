@@ -2,6 +2,11 @@ import { ReactElement } from "react";
 import { ReactNode } from "react";
 import CustomOption from "../CustomSelect/CustomOption";
 
+export type CustomOptionData = {
+  value: string;
+  text: string;
+};
+
 // This represents the diferent styles that CustomOption or CustomSelect can take
 export type CustomizableStyles = {
   base: string;
@@ -20,7 +25,7 @@ export interface CustomOptionProps {
   isDisabled?: boolean;
   _isSelected?: boolean;
   styles?: CustomizableStyles;
-  _onClickCallback?: (optionValue: string) => void;
+  _onClickCallback?: ({ value, text }: CustomOptionData) => void;
 }
 
 // childrens of CustomSelect component can be a single component of type 'CustomOption'
@@ -33,5 +38,5 @@ export type CustomSelectChildrens =
 export interface CustomSelectProps {
   children: CustomSelectChildrens;
   multiple?: boolean;
-  onOptionSelected?: (selectedOptionsValue: Array<string | null>) => void;
+  onOptionSelected?: (selectedOptionsValue: Array<CustomOptionData>) => void;
 }
