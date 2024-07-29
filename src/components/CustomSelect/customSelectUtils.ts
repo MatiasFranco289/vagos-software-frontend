@@ -220,7 +220,11 @@ export const handleOptionClicked =
 
     // If the option was not already selected
     if (indexOfNewCustomOption === -1) {
-      selectedOptionsDuplicate.push(newSelectedOptionData);
+      if (isMultiple) {
+        selectedOptionsDuplicate.push(newSelectedOptionData);
+      } else {
+        selectedOptionsDuplicate = [newSelectedOptionData];
+      }
     } else {
       selectedOptionsDuplicate = selectedOptionsDuplicate.filter(
         (option) => option.value !== newSelectedOptionData.value

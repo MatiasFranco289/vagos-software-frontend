@@ -27,6 +27,7 @@ export default function CustomSelect({
   onOptionSelected: onOptionSelected = (
     selectedOptionsValue: Array<CustomOptionData>
   ) => {},
+  extraStyles,
 }: CustomSelectProps) {
   // I run all the validations before do something
   validations.forEach((validation) => {
@@ -73,14 +74,18 @@ export default function CustomSelect({
   }, [isOptionsMenuOpen]);
 
   return (
-    <div className="bg-dark-100 p-2 rounded-sm cursor-pointer relative">
+    <div
+      className={`bg-dark-100 p-2 rounded-sm cursor-pointer relative ${extraStyles}`}
+    >
       <div
         className="absolute top-0 left-0 w-full h-full z-20"
         ref={selectRef}
       />
 
       <div className="flex items-center space-x-2">
-        <p className="opacity-0 mr-6">{getLongestOption(children)}</p>
+        <p className="opacity-0 mr-6 whitespace-nowrap">
+          {getLongestOption(children)}
+        </p>
         <p className="absolute left-0">
           {showCustomSelectText(
             customSelectText,

@@ -39,4 +39,5 @@ export interface CustomSelectProps {
   children: CustomSelectChildrens;
   multiple?: boolean;
   onOptionSelected?: (selectedOptionsValue: Array<CustomOptionData>) => void;
+  extraStyles?: string;
 }
