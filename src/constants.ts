@@ -14,7 +14,7 @@ export const STATUS_CODE_UNAUTHORIZED = 403;
 
 export const PAGES_URLS = {
   home: "/",
-  projects: "/projects",
+  projects: "/projects/1",
   blogs: "/blogs",
   about: "/about-us",
   profile: "/profile",
