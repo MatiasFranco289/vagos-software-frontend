@@ -27,7 +27,7 @@ export default function NavigationBar() {
 
   return (
     (pathname === "/login" && <div></div>) || (
-      <div className="w-full fixed sm:absolute sm:top-0 sm:bottom-100 top-100 bottom-0 h-[80px]">
+      <div className="w-full fixed z-50 sm:absolute sm:top-0 sm:bottom-100 top-100 bottom-0 h-[80px]">
         <PcNavigationBar
           urls={PAGES_URLS}
           pathname={pathname}

@@ -14,6 +14,7 @@ const config: Config = {
         "dark-100": "#191919",
         "dark-200": "#1d1d1d",
         "dark-300": "#242424",
+        "dark-400": "#2b313c",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
