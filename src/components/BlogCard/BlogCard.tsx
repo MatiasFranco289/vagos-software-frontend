@@ -1,6 +1,6 @@
 import { FaCircle } from "react-icons/fa";
 import Markdown from "react-markdown";
-
+import rehypeRaw from "rehype-raw";
 interface BlogCardProps {
   author: string;
   date: string;
@@ -30,7 +30,7 @@ export default function BlogCard({ author, date, title, body }: BlogCardProps) {
         <h2 className="font-bold text-2xl">{title}</h2>
 
         <div className="mt-3 text-left">
-          <Markdown>{body}</Markdown>
+          <Markdown rehypePlugins={[rehypeRaw]}>{body}</Markdown>
         </div>
       </div>
     </div>
