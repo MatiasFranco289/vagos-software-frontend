@@ -39,3 +39,9 @@ export interface PagesUrl {
   profile: string;
   login: string;
 }
+
+export interface BlogInfo {
+  title: string;
+  relatedProjectId: string;
+  body: string;
+}
