@@ -6,7 +6,7 @@ export interface EnvVars {
 
 // This interface represents the format used for the api to response
 export interface ApiResponse<T> {
-  statusCode: number;
+  status_code: number;
   message: string;
   data: Array<T>;
 }
