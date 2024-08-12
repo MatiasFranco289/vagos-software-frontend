@@ -8,6 +8,8 @@ import { FieldProps, FormikProps, ErrorMessage } from "formik";
 import { CustomOptionData } from "@/components/CustomSelect/interfaces";
 import { createBlogSchema } from "@/validations/CreateBlogValidation";
 import CreateEditBlogsForm from "@/components/CreateEditBlogsForm/CreateEditBlogsForm";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { ROLENAME_ADMIN } from "@/constants";
 
 export default function CreateBlog() {
   interface CustomSelectFieldProps extends FieldProps {
@@ -37,11 +39,13 @@ export default function CreateBlog() {
   };
 
   return (
-    <div className="w-full min-h-screen mt-24 flex justify-center">
-      <div className="flex flex-col w-4/6">
-        <h1 className="text-2xl font-light mb-6">{"Admin > Crear blog"}</h1>
-        <CreateEditBlogsForm onFormSend={onFormSend} sendBtnText="Crear" />
+    <ProtectedRoute requiredRole={ROLENAME_ADMIN}>
+      <div className="w-full min-h-screen mt-24 flex justify-center">
+        <div className="flex flex-col w-4/6">
+          <h1 className="text-2xl font-light mb-6">{"Admin > Crear blog"}</h1>
+          <CreateEditBlogsForm onFormSend={onFormSend} sendBtnText="Crear" />
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }

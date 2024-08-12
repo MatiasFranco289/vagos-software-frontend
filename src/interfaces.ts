@@ -12,17 +12,17 @@ export interface ApiResponse<T> {
 }
 
 // This interface defines identity 'Rol' retrieved by API
-export interface Role {
+/* export interface Role {
   id: number;
   rolename: string;
-}
+} */
 
 // This interface represents the identity 'User' retrivied by API
-export interface User {
+/* export interface User {
   id: number;
   username: string;
   role: Role;
-}
+} */
 
 // This interface represents the information about user saved in the client side
 export interface UserInfo {

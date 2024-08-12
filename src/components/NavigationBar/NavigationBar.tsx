@@ -23,7 +23,7 @@ export default function NavigationBar() {
       username: localStorage.getItem(USERNAME) || "",
       rolename: localStorage.getItem(ROLENAME) || "",
     });
-  }, []);
+  }, [pathname]);
 
   return (
     (pathname === "/login" && <div></div>) || (
