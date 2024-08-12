@@ -7,10 +7,15 @@ import { ErrorMessage } from "formik";
 import Modal from "@/components/Modal/Modal";
 import { useEffect, useState } from "react";
 import GlowingButton from "@/components/GlowingButton/GlowingButton";
-import { ROLENAME, STATUS_CODE_UNAUTHORIZED, USERNAME } from "@/constants";
+import {
+  ROLENAME,
+  STATUS_CODE_NOT_FOUND,
+  STATUS_CODE_UNAUTHORIZED,
+  USERNAME,
+} from "@/constants";
 import axiosInstance from "@/axios";
 import { getEnvironmentVariable } from "@/utils";
-import { User } from "@/interfaces";
+import { ApiUser } from "@/apiInterfaces";
 import { ApiResponse } from "@/interfaces";
 import { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
@@ -33,15 +38,19 @@ export default function Login() {
   const tryLogin = (formValues: UserCredentials) => {
     axiosInstance
       .post(`${apiBaseUrl}/api/auth/login`, formValues)
-      .then((response: AxiosResponse<ApiResponse<User>, UserCredentials>) => {
-        localStorage.setItem(USERNAME, response.data.data[0].username);
-        localStorage.setItem(ROLENAME, response.data.data[0].role.rolename);
-        router.push("/");
-      })
+      .then(
+        (response: AxiosResponse<ApiResponse<ApiUser>, UserCredentials>) => {
+          localStorage.setItem(USERNAME, response.data.data[0].username);
+          localStorage.setItem(ROLENAME, response.data.data[0].role.name);
+          router.push("/");
+        }
+      )
       .catch((err) => {
         const statusCode: number = err.response.status;
 
-        if (statusCode == STATUS_CODE_UNAUTHORIZED) {
+        if (
+          [STATUS_CODE_NOT_FOUND, STATUS_CODE_UNAUTHORIZED].includes(statusCode)
+        ) {
           setModalInfo({
             title: "Credenciales incorrectas",
             message: `Credenciales incorrectas. Por favor, 

@@ -8,9 +8,12 @@ export const ENVIRONMENT_VARIABLES: EnvVars = {
 export const USERNAME = "username";
 export const ROLENAME = "rolename";
 
+export const ROLENAME_ADMIN = "ADMIN";
+export const ROLENAME_USER = "USER";
+
 export const STATUS_CODE_NOT_FOUND = 404;
 export const STATUS_CODE_BAD_REQUEST = 400;
-export const STATUS_CODE_UNAUTHORIZED = 403;
+export const STATUS_CODE_UNAUTHORIZED = 401;
 
 export const PAGES_URLS = {
   home: "/",
