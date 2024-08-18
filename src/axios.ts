@@ -1,11 +1,23 @@
 import axios from "axios";
-import { getEnvironmentVariable } from "./utils";
-import { USERNAME, ROLENAME, STATUS_CODE_UNAUTHORIZED } from "./constants";
+import {
+  USERNAME,
+  ROLENAME,
+  STATUS_CODE_UNAUTHORIZED,
+  ENVIRONMENT_VARIABLES,
+} from "./constants";
 
 const INVALID_TOKEN_MESSAGE = "Invalid token";
 
+const FRONTEND_BASE_URL =
+  ENVIRONMENT_VARIABLES["NEXT_PUBLIC_FRONTEND_BASE_URL"];
+
+if (!FRONTEND_BASE_URL) {
+  throw new Error(`Error, the environment variable "NEXT_PUBLIC_FRONTEND_BASE_URL" was not found
+      in the environment file."`);
+}
+
 const axiosInstance = axios.create({
-  baseURL: getEnvironmentVariable("NEXT_PUBLIC_FRONTEND_BASE_URL"),
+  baseURL: FRONTEND_BASE_URL,
   timeout: 20000,
   withCredentials: true,
 });

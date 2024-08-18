@@ -8,6 +8,7 @@ import Modal from "@/components/Modal/Modal";
 import { useEffect, useState } from "react";
 import GlowingButton from "@/components/GlowingButton/GlowingButton";
 import {
+  ID,
   ROLENAME,
   STATUS_CODE_NOT_FOUND,
   STATUS_CODE_UNAUTHORIZED,
@@ -15,7 +16,7 @@ import {
 } from "@/constants";
 import axiosInstance from "@/axios";
 import { getEnvironmentVariable } from "@/utils";
-import { ApiUser } from "@/apiInterfaces";
+import { ApiUser, ApiUserRole } from "@/apiInterfaces";
 import { ApiResponse } from "@/interfaces";
 import { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,10 @@ export default function Login() {
   interface UserCredentials {
     username: string;
     password: string;
+  }
+
+  interface UserWithRole extends ApiUser {
+    role: ApiUserRole;
   }
 
   const router = useRouter();
@@ -39,7 +44,10 @@ export default function Login() {
     axiosInstance
       .post(`${apiBaseUrl}/api/auth/login`, formValues)
       .then(
-        (response: AxiosResponse<ApiResponse<ApiUser>, UserCredentials>) => {
+        (
+          response: AxiosResponse<ApiResponse<UserWithRole>, UserCredentials>
+        ) => {
+          localStorage.setItem(ID, response.data.data[0].id.toString());
           localStorage.setItem(USERNAME, response.data.data[0].username);
           localStorage.setItem(ROLENAME, response.data.data[0].role.name);
           router.push("/");
