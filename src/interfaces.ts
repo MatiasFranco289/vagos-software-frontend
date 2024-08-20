@@ -6,23 +6,10 @@ export interface EnvVars {
 
 // This interface represents the format used for the api to response
 export interface ApiResponse<T> {
-  statusCode: number;
+  status_code: number;
   message: string;
   data: Array<T>;
 }
-
-// This interface defines identity 'Rol' retrieved by API
-/* export interface Role {
-  id: number;
-  rolename: string;
-} */
-
-// This interface represents the identity 'User' retrivied by API
-/* export interface User {
-  id: number;
-  username: string;
-  role: Role;
-} */
 
 // This interface represents the information about user saved in the client side
 export interface UserInfo {

@@ -11,6 +11,7 @@ interface ModalProps {
   buttonText: string;
   isOpen: boolean;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+  onClose?: () => void;
 }
 
 export default function Modal({
@@ -20,6 +21,7 @@ export default function Modal({
   buttonText,
   isOpen,
   setIsModalOpen,
+  onClose: onClose = () => {},
 }: ModalProps) {
   const [delayedIsOpen, setDelayedIsOpen] = useState(false);
 
@@ -69,7 +71,10 @@ export default function Modal({
           <div className="w-full flex justify-center">
             <GlowingButton
               text={buttonText}
-              onClick={() => setIsModalOpen(false)}
+              onClick={() => {
+                setIsModalOpen(false);
+                onClose();
+              }}
             />
           </div>
         </div>
