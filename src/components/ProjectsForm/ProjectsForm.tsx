@@ -1,46 +1,28 @@
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  FormikErrors,
-  FieldArray,
-} from "formik";
-import CustomSelect from "../CustomSelect/CustomSelect";
-import CustomOption from "../CustomSelect/CustomOption";
-import {
-  ApiProject,
-  ApiProjectStatus,
-  ApiProjectTag,
-  ApiResource,
-  ApiResourceType,
-} from "@/apiInterfaces";
-import { CustomOptionData } from "../CustomSelect/interfaces";
+import { Formik, Form, FormikErrors } from "formik";
+import { ApiProject, ApiProjectStatus, ApiProjectTag } from "@/apiInterfaces";
 import { createProjectSchema } from "@/validations/CreateProjectValidations";
 import GlowingButton from "../GlowingButton/GlowingButton";
-import axiosInstance from "@/axios";
-import { getEnvironmentVariable } from "@/utils";
-import { ID, POST_PROJECT_RESOURCE_API_URL } from "@/constants";
-import { useState } from "react";
-
-interface ExtendedApiProject extends ApiProject {
-  resources_urls: Array<string>;
-  resource_type: number;
-}
+import {
+  DefaultField,
+  DateField,
+  CustomSelectField,
+  AreaField,
+} from "../utils/FormInputs";
+import { ID } from "@/constants";
 
 interface ProjectsFormProps {
   projectTags: Array<ApiProjectTag>;
   projectStates: Array<ApiProjectStatus>;
-  resourceTypes: Array<ApiResourceType>;
-  initialValues: ExtendedApiProject;
+  validationSchema: typeof createProjectSchema;
+  initialValues?: Omit<ApiProject, "id">;
+  onSubmit?: (formValues: Omit<ApiProject, "id">) => void;
+  onCancel?: () => void;
 }
 
 export default function ProjectsForm({
   projectTags,
   projectStates,
-  resourceTypes,
   initialValues: initialValues = {
-    id: 0,
     title: "",
     description: "",
     thumbnail_url: "",
@@ -50,253 +32,31 @@ export default function ProjectsForm({
     status_id: 0,
     repository_url: "",
     tags_id: [],
-    creator_id: 0,
-    resources_urls: [""],
-    resource_type: 1,
+    creator_id: parseInt(localStorage.getItem(ID) || "0"),
   },
+  validationSchema,
+  onSubmit: onSubmit = (_formValues: Omit<ApiProject, "id">) => {},
+  onCancel: onCancel = () => {},
 }: ProjectsFormProps) {
-  const [resourcesToCreate, setResourcesToCreate] = useState<
-    Array<Partial<ApiResource>>
-  >([]);
-
-  // TODO: Eliminar los campos inecesarios
-  // TODO: Cambiar los any por tipos
-  const handleAddResource = async (
-    values: any,
-    validateField: any,
-    errors: any,
-    setFieldError: any,
-    setFieldTouched: any,
-    setFieldValue: any,
-    index: number
-  ) => {
-    // Set field touched to show error message
-    setFieldTouched(`resources_urls.${index}`);
-
-    console.log(errors);
-    // If there are no errors
-    if (!errors["resources_url"]) {
-      const url: string = values["resources_url"];
-      const typeId: number = values["resource_type"];
-
-      let resourceToCreateAux = resourcesToCreate;
-      resourceToCreateAux.push({
-        url: url,
-        type_id: typeId,
-        project_id: 0, // This will be setted once the project is created
+  // This function is called when the send button is pressed
+  // if there are errors in the form, it will scroll to the page start
+  const checkErrors = (errors: FormikErrors<Omit<ApiProject, "id">>) => {
+    if (Object.keys(errors).length) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
       });
-
-      setFieldValue("resources_url", "");
     }
   };
-
-  // TODO: inferir tipos a esto
-  const handleResourceTypeChange = (
-    setFieldValue: any,
-    selectedValues: Array<CustomOptionData>
-  ) => {
-    if (selectedValues.length) {
-      setFieldValue("resource_type", selectedValues[0].value);
-    }
-  };
-
-  const DefaultField = (placeholder: string, label: string, name: string) => {
-    return (
-      <div className="relative">
-        <label htmlFor={name} className="font-semibold">
-          {label}
-        </label>
-
-        <Field
-          name={name}
-          type="text"
-          placeholder={placeholder}
-          className={`bg-dark-200 h-[35px] rounded-sm p-1 border-[1px] outline-none focus:border-green-500 w-full mt-1`}
-        />
-
-        <ErrorMessage
-          name={name}
-          component="div"
-          className="text-red-600 absolute bottom-0 text-sm"
-        />
-        <div className="sm:h-[25px] h-[30px]" />
-      </div>
-    );
-  };
-
-  const AreaField = (placeholder: string, label: string, name: string) => {
-    return (
-      <div className="relative">
-        <label htmlFor={name} className="font-semibold">
-          {label}
-        </label>
-
-        <Field
-          as="textarea"
-          id="description"
-          name="body"
-          placeholder="Escriba su descripción aquí"
-          className="bg-dark-200 w-full rounded-sm p-1 border-[1px] outline-none focus:border-green-500 mt-1"
-          rows="10"
-        />
-
-        <ErrorMessage
-          name={name}
-          component="div"
-          className="text-red-600 absolute bottom-0 text-sm"
-        />
-        <div className="sm:h-[25px] h-[30px]" />
-      </div>
-    );
-  };
-
-  const DateField = (label: string, name: string) => {
-    return (
-      <div className="relative">
-        <label htmlFor={name} className="font-semibold">
-          {label}
-        </label>
-
-        <Field
-          name={name}
-          type="date"
-          className="bg-dark-200 h-[35px] rounded-sm p-1 border-[1px] outline-none focus:border-green-500 w-full mt-1"
-        />
-
-        <ErrorMessage
-          name={name}
-          component="div"
-          className="text-red-600 absolute bottom-0 text-sm"
-        />
-        <div className="sm:h-[25px] h-[30px]" />
-      </div>
-    );
-  };
-
-  const CustomSelectField = (
-    options: Array<{ value: string; name: string }>,
-    defaultOption: { value: string; name: string },
-    label: string,
-    name: string,
-    setFieldValue: (
-      field: string,
-      value: any,
-      shouldValidate?: boolean
-    ) => Promise<void | FormikErrors<{}>>,
-    multiple: boolean
-  ) => {
-    const handleChange = (selectedValues: Array<CustomOptionData>) => {
-      const selectedValuesId = selectedValues.map((value) => {
-        return value.value;
-      });
-
-      setFieldValue(name, selectedValuesId);
-    };
-
-    const optionsToRender = options.map((option, index) => {
-      return (
-        <CustomOption value={option.value} key={`custom_option_${index}`}>
-          {option.name}
-        </CustomOption>
-      );
-    });
-
-    optionsToRender.unshift(
-      <CustomOption
-        value={defaultOption.value}
-        isDefault
-        isDisabled
-        key={"default_custom_option"}
-      >
-        {defaultOption.name}
-      </CustomOption>
-    );
-
-    return (
-      <div>
-        <label htmlFor={name} className="font-semibold">
-          {label}
-        </label>
-
-        <div className="mt-1">
-          <CustomSelect onOptionSelected={handleChange} multiple={multiple}>
-            {optionsToRender}
-          </CustomSelect>
-        </div>
-
-        <ErrorMessage
-          name={name}
-          component="div"
-          className="text-red-600 absolute bottom-0 text-sm"
-        />
-        <div className="sm:h-[25px] h-[30px]" />
-      </div>
-    );
-  };
-
-  // TODO: Eliminar variables inecesarias
-  // TODO: inferir tipos correctamente
-  const ResourceField = (values: any, errors: any, touched: any) => {
-    // TODO: Eliminar any
-    // TODO: Si no hay recursos se deberia renderizar los botones igual
-    return (
-      <FieldArray name="resources_urls">
-        {({ push, remove }) => (
-          <div>
-            {values.resources_urls.map((resource: string, index: any) => (
-              <div key={index} className="flex justify-between">
-                <div className="w-4/6">
-                  {DefaultField("www.drive.com", "", `resources_urls.${index}`)}
-                </div>
-
-                <div className="flex w-1/6 space-x-6">
-                  <GlowingButton
-                    type="button"
-                    onClick={() => remove(index)}
-                    text="Eliminar"
-                  />
-
-                  <GlowingButton
-                    type="button"
-                    text="Agregar"
-                    onClick={() => {
-                      if (
-                        !errors.resources_urls ||
-                        !errors.resources_urls[index] ||
-                        !touched.resources_urls[index]
-                      ) {
-                        push("");
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </FieldArray>
-    );
-  };
-
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={createProjectSchema}
-      onSubmit={(values) => {
-        console.log(values);
-      }}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
     >
-      {({
-        values,
-        setFieldValue,
-        validateField,
-        errors,
-        setFieldError,
-        setFieldTouched,
-        touched,
-      }) => {
+      {({ setFieldValue, errors }) => {
         return (
-          <Form className="w-full bg-dark-300 p-6 rounded-md">
+          <Form className="w-full bg-dark-300 sm:p-10 p-4 rounded-md mb-28 sm:mb-12">
             <div className="grid gap-10 md:grid-cols-2 mt-6">
               {DefaultField("Hyper triangle", "Titulo del proyecto", "title")}
 
@@ -308,7 +68,7 @@ export default function ProjectsForm({
 
               {DefaultField(
                 "https://github.com/MatiasFranco289/vagos-software-frontend",
-                "Url de la miniatura",
+                "Url del repositorio",
                 "repository_url"
               )}
 
@@ -353,17 +113,27 @@ export default function ProjectsForm({
               )}
             </div>
 
-            <div>
+            <div className="mt-2">
               {AreaField("Resumen del proyecto", "Descripcion", "description")}
             </div>
 
-            <div>
-              <label htmlFor="">Recursos</label>
+            <div className="w-full flex justify-end mt-6 flex-wrap sm:flex-row flex-col items-center">
+              <div className="w-2/12 flex justify-center min-w-32 my-2">
+                <GlowingButton
+                  text="Crear"
+                  type="submit"
+                  onClick={() => checkErrors(errors)}
+                />
+              </div>
 
-              {ResourceField(values, errors, touched)}
+              <div className="w-1/12  flex justify-center min-w-32 my-2">
+                <GlowingButton
+                  text="Cancelar"
+                  type="button"
+                  onClick={onCancel}
+                />
+              </div>
             </div>
-
-            <GlowingButton text="enviar" type="submit" />
           </Form>
         );
       }}

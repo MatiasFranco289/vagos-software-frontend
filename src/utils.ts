@@ -1,4 +1,10 @@
-import { ENVIRONMENT_VARIABLES, ROLENAME } from "./constants";
+import { ApiResponse } from "./interfaces";
+import {
+  ENVIRONMENT_VARIABLES,
+  ROLENAME,
+  STATUS_CODE_BAD_REQUEST,
+  STATUS_CODE_UNAUTHORIZED,
+} from "./constants";
 import { EnvVars } from "./interfaces";
 
 // In the 'constants' file exist a dictionary containing the environment variables
@@ -13,4 +19,28 @@ export const getEnvironmentVariable = (varName: keyof EnvVars): string => {
   }
 
   return env_var;
+};
+
+// This function manages what happens when the api response is an error
+// returns an string with a message for the client
+export const manageRequestErrors = (
+  apiResponse: ApiResponse<unknown>,
+  errorMessagesToShow: { [key: string]: string }
+): string | undefined => {
+  const UNAUTHORIZED_CLIENT_MESSAGE =
+    "No tienes permisos suficientes para realizar esta accion.";
+
+  if (apiResponse.status_code === STATUS_CODE_UNAUTHORIZED) {
+    return UNAUTHORIZED_CLIENT_MESSAGE;
+  }
+
+  // If error was caused by a bad request
+  if (apiResponse.status_code === STATUS_CODE_BAD_REQUEST) {
+    const badRequestMessageToClient: string | undefined =
+      errorMessagesToShow[
+        apiResponse.message as keyof typeof errorMessagesToShow
+      ];
+
+    return badRequestMessageToClient;
+  }
 };
