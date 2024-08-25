@@ -23,14 +23,16 @@ export const STATUS_CODE_BAD_REQUEST = 400;
 export const STATUS_CODE_UNAUTHORIZED = 401;
 export const STATUS_CODE_INTERNAL_SERVER_ERROR = 500;
 
+export const GET_PROJECTS = "/api/projects";
 export const GET_PROJECT_STATES_API_URL = "/api/projects/status";
 export const GET_PROJECT_TAGS_API_URL = "/api/projects/tags";
+
 export const POST_PROJECT_RESOURCE_API_URL = "/api/admin/projects/resources";
 export const POST_PROJECT_API_URL = "/api/admin/projects";
 
 export const PAGES_URLS = {
   home: "/",
-  projects: "/projects/1",
+  projects: "/projects",
   blogs: "/blogs",
   about: "/about-us",
   profile: "/profile",

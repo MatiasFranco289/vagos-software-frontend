@@ -18,13 +18,16 @@ export default function MobileNavigationBar({
   pathname,
   userInfo,
 }: MobileNavigationBarProps) {
-  const IconLink = (Icon: React.ElementType, href: string) => {
+  const IconLink = (Icon: React.ElementType, baseUrl: string, goTo: string) => {
+    console.log(baseUrl);
+    console.log(pathname);
+
     return (
-      <Link href={href} className="relative">
+      <Link href={goTo} className="relative">
         <Icon className="relative z-10" />
         <Icon
           className={`absolute top-0 left-0 text-orange-500 blur-sm
-            ${pathname === href ? "opacity-100" : "opacity-0"} duration-200`}
+            ${pathname === baseUrl ? "opacity-100" : "opacity-0"} duration-200`}
         />
       </Link>
     );
@@ -35,12 +38,17 @@ export default function MobileNavigationBar({
       className=" w-full h-full sm:hidden flex min-[400px]:text-5xl text-4xl min-[400px]:space-x-7 space-x-6 items-center justify-center 
         bg-dark-300"
     >
-      {IconLink(IoHomeOutline, urls.home)}
-      {IconLink(GrProjects, urls.projects)}
-      {IconLink(GrBlog, urls.blogs)}
-      {IconLink(GoOrganization, urls.about)}
+      {IconLink(IoHomeOutline, urls.home, urls.home)}
+      {IconLink(
+        GrProjects,
+        urls.projects,
+        "/projects/1?order=ASC&order_by=title"
+      )}
+      {IconLink(GrBlog, urls.blogs, urls.blogs)}
+      {IconLink(GoOrganization, urls.about, urls.about)}
       {IconLink(
         CiUser,
+        userInfo.username ? `${urls.profile}/${userInfo.username}` : urls.login,
         userInfo.username ? `${urls.profile}/${userInfo.username}` : urls.login
       )}
     </div>
