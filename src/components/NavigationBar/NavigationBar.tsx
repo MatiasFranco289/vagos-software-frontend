@@ -16,7 +16,7 @@ export default function NavigationBar() {
     rolename: "",
   });
 
-  const pathname = usePathname();
+  const pathname = "/" + usePathname().split("/")[1];
 
   useEffect(() => {
     setUserInfo({

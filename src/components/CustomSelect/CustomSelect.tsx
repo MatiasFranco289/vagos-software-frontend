@@ -46,6 +46,12 @@ export default function CustomSelect({
   >(getOptionsSelectedByDefault(children)); // This array will save the value of all selected options
 
   // Event listener with callback function to manage the options menu status
+
+  // When children changes updates the selected options because children can have its property "defaultSelected" changed
+  useEffect(() => {
+    setSelectedOptions(getOptionsSelectedByDefault(children));
+  }, [children]);
+
   useEffect(() => {
     const handleMouseDown = (event: MouseEvent) => {
       toggleOptionsContainerVisibility(

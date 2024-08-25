@@ -50,6 +50,10 @@ export interface ApiProject {
   repository_url: string;
   tags_id: Array<number>;
   creator_id: number;
+  created_at: string;
+  updated_at: string;
+  tags?: Array<ApiProjectTag>;
+  status?: ApiProjectStatus;
 }
 
 export interface ApiUser {

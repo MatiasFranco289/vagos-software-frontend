@@ -20,12 +20,12 @@ export default function PcNavigationBar({
 }: PcNavigationBarProps) {
   const router = useRouter();
 
-  const customLinkElement = (text: string, href: string) => {
+  const customLinkElement = (text: string, baseUrl: string, goTo: string) => {
     return (
       <Link
-        href={href}
+        href={goTo}
         className={`${
-          pathname === href ? "glow-text cursor-default" : "hover:scale-105"
+          pathname === baseUrl ? "glow-text cursor-default" : "hover:scale-105"
         } hover:glow-text duration-200`}
       >
         {text}
@@ -40,10 +40,14 @@ export default function PcNavigationBar({
       </div>
 
       <div className="space-x-6 flex items-center whitespace-nowrap">
-        {customLinkElement("Inicio", urls.home)}
-        {customLinkElement("Proyectos", urls.projects)}
-        {customLinkElement("Blogs", urls.blogs)}
-        {customLinkElement("Sobre nosotros", urls.about)}
+        {customLinkElement("Inicio", urls.home, urls.home)}
+        {customLinkElement(
+          "Proyectos",
+          urls.projects,
+          "/projects/1?order=ASC&order_by=title"
+        )}
+        {customLinkElement("Blogs", urls.blogs, urls.blogs)}
+        {customLinkElement("Sobre nosotros", urls.about, urls.about)}
 
         {/* If user is logged in show info, other way show loggin button */}
         {(!userInfo.username && (
