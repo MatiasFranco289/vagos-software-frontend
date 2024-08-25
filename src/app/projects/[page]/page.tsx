@@ -5,7 +5,7 @@ import CustomSelect from "@/components/CustomSelect/CustomSelect";
 import CustomOption from "@/components/CustomSelect/CustomOption";
 import { CustomOptionData } from "@/components/CustomSelect/interfaces";
 import Paginator from "@/components/Paginator/Paginator";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getEnvironmentVariable } from "@/utils";
 import axiosInstance from "@/axios";
 import {
@@ -42,6 +42,7 @@ export default function Projects({ params }: ProjectsProps) {
   const searchParams = useSearchParams();
   const queryParams = Object.fromEntries(searchParams.entries());
   const selectedFilters = (queryParams.filters || "").split(",");
+  const tagsSelectRef = useRef<{ clearState: () => void }>(null);
 
   useEffect(() => {
     getTags();
@@ -154,6 +155,7 @@ export default function Projects({ params }: ProjectsProps) {
         multiple
         onOptionSelected={onFilterSelected}
         extraStyles="mt-6 md:mt-0"
+        ref={tagsSelectRef}
       >
         {optionsToRender}
       </CustomSelect>
@@ -174,8 +176,12 @@ export default function Projects({ params }: ProjectsProps) {
 
   const clearFilters = () => {
     delete queryParams["filters"];
+
+    if (tagsSelectRef.current) {
+      tagsSelectRef.current.clearState();
+    }
+
     refreshProjects();
-    getProjects();
   };
 
   return (

@@ -14,8 +14,10 @@ interface ProjectsFormProps {
   projectTags: Array<ApiProjectTag>;
   projectStates: Array<ApiProjectStatus>;
   validationSchema: typeof createProjectSchema;
-  initialValues?: Omit<ApiProject, "id">;
-  onSubmit?: (formValues: Omit<ApiProject, "id">) => void;
+  initialValues?: Omit<ApiProject, "id" | "updated_at" | "created_at">;
+  onSubmit?: (
+    formValues: Omit<ApiProject, "id" | "created_at" | "updated_at">
+  ) => void;
   onCancel?: () => void;
 }
 
@@ -35,7 +37,9 @@ export default function ProjectsForm({
     creator_id: parseInt(localStorage.getItem(ID) || "0"),
   },
   validationSchema,
-  onSubmit: onSubmit = (_formValues: Omit<ApiProject, "id">) => {},
+  onSubmit: onSubmit = (
+    _formValues: Omit<ApiProject, "id" | "created_at" | "updated_at">
+  ) => {},
   onCancel: onCancel = () => {},
 }: ProjectsFormProps) {
   // This function is called when the send button is pressed

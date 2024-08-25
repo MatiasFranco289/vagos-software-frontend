@@ -19,9 +19,6 @@ export default function MobileNavigationBar({
   userInfo,
 }: MobileNavigationBarProps) {
   const IconLink = (Icon: React.ElementType, baseUrl: string, goTo: string) => {
-    console.log(baseUrl);
-    console.log(pathname);
-
     return (
       <Link href={goTo} className="relative">
         <Icon className="relative z-10" />
