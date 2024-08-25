@@ -1,5 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import {
+  ForwardRefRenderFunction,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import {
   getLongestOption,
   getExtendedCustomOptions,
@@ -21,14 +27,24 @@ import React from "react";
 // onOptionSelected is an optional callback that will be invoked every time a CustomOption is clicked
 // this callback function must have a parameter being Array<string | null> that will be used to pass the
 // value of the current selected CustomOption components
-export default function CustomSelect({
-  children,
-  multiple: multiple = false,
-  onOptionSelected: onOptionSelected = (
-    selectedOptionsValue: Array<CustomOptionData>
-  ) => {},
-  extraStyles,
-}: CustomSelectProps) {
+
+// You can also call the function clearState to clear the selected items from another component use ref
+interface CustomSelectHandles {
+  clearState: () => void;
+}
+
+const CustomSelect: ForwardRefRenderFunction<
+  CustomSelectHandles,
+  CustomSelectProps
+> = (
+  {
+    children,
+    multiple = false,
+    onOptionSelected = (selectedOptionsValue: Array<CustomOptionData>) => {},
+    extraStyles,
+  },
+  ref
+) => {
   // I run all the validations before do something
   validations.forEach((validation) => {
     validation(children, multiple);
@@ -45,12 +61,11 @@ export default function CustomSelect({
     Array<CustomOptionData>
   >(getOptionsSelectedByDefault(children)); // This array will save the value of all selected options
 
-  // Event listener with callback function to manage the options menu status
-
-  // When children changes updates the selected options because children can have its property "defaultSelected" changed
-  useEffect(() => {
-    setSelectedOptions(getOptionsSelectedByDefault(children));
-  }, [children]);
+  useImperativeHandle(ref, () => ({
+    clearState() {
+      setSelectedOptions([]);
+    },
+  }));
 
   useEffect(() => {
     const handleMouseDown = (event: MouseEvent) => {
@@ -121,4 +136,6 @@ export default function CustomSelect({
       </div>
     </div>
   );
-}
+};
+
+export default React.forwardRef(CustomSelect);
