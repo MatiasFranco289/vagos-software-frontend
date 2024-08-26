@@ -72,7 +72,9 @@ export default function CreateProject() {
     }
   };
 
-  const onFormSubmit = async (formValues: Omit<ApiProject, "id">) => {
+  const onFormSubmit = async (
+    formValues: Omit<ApiProject, "id" | "created_at" | "updated_at">
+  ) => {
     const errorsToShow = {
       "title must be unique": "Ya existe otro proyecto con el mismo titulo.",
     };

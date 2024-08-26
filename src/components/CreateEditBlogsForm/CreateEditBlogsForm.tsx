@@ -13,60 +13,68 @@ import { CustomOptionData } from "../CustomSelect/interfaces";
 import BlogCard from "../BlogCard/BlogCard";
 import GlowingButton from "../GlowingButton/GlowingButton";
 import { BlogInfo } from "@/interfaces";
+import { ApiProject } from "@/apiInterfaces";
+import { USERNAME } from "@/constants";
 
 interface CreateEditBlogsForm {
   onFormSend: (formInfo: BlogInfo) => void;
   sendBtnText: string;
+  projects: Array<ApiProject>;
+  validationSchema: typeof createBlogSchema;
   defaultValues?: BlogInfo;
 }
 
 export default function CreateEditBlogsForm({
   onFormSend: onFormSend = (formInfo: BlogInfo) => {},
   sendBtnText,
+  projects,
+  validationSchema,
   defaultValues: defaultValues = {
     title: "",
     relatedProjectId: "",
     body: "",
   },
 }: CreateEditBlogsForm) {
+  const today = new Date().toISOString().split("T")[0];
+
   interface CustomSelectFieldProps extends FieldProps {
     form: FormikProps<any>;
   }
   // This returns a component managed by Formik using the CustomSelect component
   const CustomSelectField = ({ field, form }: CustomSelectFieldProps) => {
     const handleChange = (value: CustomOptionData[]) => {
-      form.setFieldValue(field.name, (value.length && value[0].value) || 0);
+      if (value[0]) {
+        const newValue = value[0].value;
+        form.setFieldValue("relatedProjectId", newValue);
+      }
     };
 
+    let options: JSX.Element[] = projects.map((project, index) => {
+      return (
+        <CustomOption
+          value={project.id.toString()}
+          key={`custom_select_project_${index}`}
+        >
+          {project.title}
+        </CustomOption>
+      );
+    });
+
+    options.unshift(
+      <CustomOption value="" isDefault isDisabled key="custom_select_default">
+        Seleccione el proyecto relacionado
+      </CustomOption>
+    );
+
     return (
-      <CustomSelect onOptionSelected={handleChange}>
-        <CustomOption value="" isDefault isDisabled>
-          Seleccione el proyecto relacionado
-        </CustomOption>
-        <CustomOption
-          value="1"
-          isDefaultSelected={defaultValues.relatedProjectId === "1"}
-        >
-          Project 1
-        </CustomOption>
-        <CustomOption
-          value="2"
-          isDefaultSelected={defaultValues.relatedProjectId === "2"}
-        >
-          Project 2
-        </CustomOption>
-      </CustomSelect>
+      <CustomSelect onOptionSelected={handleChange}>{options}</CustomSelect>
     );
   };
 
   return (
     <Formik
-      initialValues={{
-        title: defaultValues.title,
-        body: defaultValues.body,
-        relatedProjectId: defaultValues.relatedProjectId,
-      }}
-      validationSchema={createBlogSchema}
+      initialValues={defaultValues}
+      validationSchema={validationSchema}
       onSubmit={onFormSend}
     >
       {({ values }) => {
@@ -93,7 +101,7 @@ export default function CreateEditBlogsForm({
                 <Field name="relatedProjectId" component={CustomSelectField} />
 
                 <ErrorMessage
-                  name="relatedProject"
+                  name="relatedProjectId"
                   component="div"
                   className="text-red-600 absolute bottom-0 text-sm"
                 />
@@ -129,8 +137,8 @@ export default function CreateEditBlogsForm({
 
             <div className="bg-dark-300 mt-6 p-6 rounded-md">
               <BlogCard
-                author="VagoDev01"
-                date="05/08/2024"
+                author={localStorage.getItem(USERNAME) || "VagoDev"}
+                date={today}
                 title={values.title}
                 body={values.body}
               />
