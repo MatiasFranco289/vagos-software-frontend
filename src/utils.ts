@@ -44,3 +44,9 @@ export const manageRequestErrors = (
     return badRequestMessageToClient;
   }
 };
+
+// Receives a string representing a date in format yyyy-mm-ddT00:00:00.000Z
+// and returns the same string but in format yyyy-mm-dd
+export function normalizeDate(date: string) {
+  return date.split("T")[0];
+}

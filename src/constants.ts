@@ -25,6 +25,7 @@ export const STATUS_CODE_UNAUTHORIZED = 401;
 export const STATUS_CODE_INTERNAL_SERVER_ERROR = 500;
 
 export const GET_PROJECTS = "/api/projects";
+export const GET_PROJECT_DETAILS = "/api/projects/";
 export const GET_PROJECT_STATES_API_URL = "/api/projects/status";
 export const GET_PROJECT_TAGS_API_URL = "/api/projects/tags";
 
