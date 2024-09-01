@@ -19,6 +19,7 @@ import { createProjectSchema } from "@/validations/CreateProjectValidations";
 import axios from "axios";
 import Modal from "@/components/Modal/Modal";
 import { useRouter } from "next/navigation";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function CreateProject() {
   const router = useRouter();
@@ -107,40 +108,42 @@ export default function CreateProject() {
   };
 
   return (
-    <div className="w-full min-h-screen mt-24 flex justify-center">
-      {(projectTags && projectStates && (
-        <div className="flex flex-col w-5/6">
-          <h1 className="text-2xl font-light mb-6">
-            {"Admin > Crear proyecto"}
-          </h1>
-          <ProjectsForm
-            projectTags={projectTags}
-            projectStates={projectStates}
-            validationSchema={createProjectSchema}
-            onSubmit={onFormSubmit}
-            onCancel={() => router.push("/admin")}
-          />
+    <ProtectedRoute requiredRole={ROLENAME_ADMIN}>
+      <div className="w-full min-h-screen mt-24 flex justify-center">
+        {(projectTags && projectStates && (
+          <div className="flex flex-col w-5/6">
+            <h1 className="text-2xl font-light mb-6">
+              {"Admin > Crear proyecto"}
+            </h1>
+            <ProjectsForm
+              projectTags={projectTags}
+              projectStates={projectStates}
+              validationSchema={createProjectSchema}
+              onSubmit={onFormSubmit}
+              onCancel={() => router.push("/admin")}
+            />
 
-          <Modal
-            title="Exito"
-            icon="SUCCESS"
-            message={modalMessage}
-            buttonText="Entendido"
-            isOpen={successModalOpen}
-            setIsModalOpen={setSuccessModalOpen}
-            onClose={() => router.push("/admin")}
-          />
+            <Modal
+              title="Exito"
+              icon="SUCCESS"
+              message={modalMessage}
+              buttonText="Entendido"
+              isOpen={successModalOpen}
+              setIsModalOpen={setSuccessModalOpen}
+              onClose={() => router.push("/admin")}
+            />
 
-          <Modal
-            title="Error"
-            icon="DANGER"
-            message={modalMessage}
-            buttonText="Entendido"
-            isOpen={errorModalOpen}
-            setIsModalOpen={setErrorModalOpen}
-          />
-        </div>
-      )) || <LoadingScreen />}
-    </div>
+            <Modal
+              title="Error"
+              icon="DANGER"
+              message={modalMessage}
+              buttonText="Entendido"
+              isOpen={errorModalOpen}
+              setIsModalOpen={setErrorModalOpen}
+            />
+          </div>
+        )) || <LoadingScreen />}
+      </div>
+    </ProtectedRoute>
   );
 }
