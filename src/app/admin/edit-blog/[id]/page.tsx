@@ -27,7 +27,7 @@ export default function EditBlog() {
     console.log(formInfo);
   };
 
-  const renderizeFormOrLoading = () => {
+  /* const renderizeFormOrLoading = () => {
     if (isLoading) {
       return <div>Loading ..</div>;
     } else {
@@ -39,14 +39,14 @@ export default function EditBlog() {
         />
       );
     }
-  };
+  }; */
 
   return (
     <ProtectedRoute requiredRole={ROLENAME_ADMIN}>
       <div className="w-full min-h-screen mt-24 flex justify-center">
         <div className="flex flex-col w-4/6">
           <h1 className="text-2xl font-light mb-6">{"Admin > Editar blog"}</h1>
-          {renderizeFormOrLoading()}
+          {/* {renderizeFormOrLoading()} */}
         </div>
       </div>
     </ProtectedRoute>
