@@ -56,7 +56,7 @@ export default function Project({ params }: ProjectProps) {
         <div className="w-full min-h-screen flex justify-center items-start">
           <div className="w-5/6 mt-[100px]">
             <h1 className="text-2xl font-light mb-6">
-              {"Proyectos > Hyper triangle"}
+              {`Proyectos > ${projectInfo.title}`}
             </h1>
 
             <div className="w-full bg-dark-300 rounded-md p-6">
