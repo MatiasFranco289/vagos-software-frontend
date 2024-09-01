@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "docker-compose up",
     "build": "docker-compose build",
+    "build-prod": "next build",
     "start": "next start",
     "lint": "next lint"
   },
