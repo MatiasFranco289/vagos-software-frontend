@@ -1,0 +1,148 @@
+#vagos_title {
+  animation: fill 0.5s ease forwards 4.2s;
+}
+
+#software_title {
+  animation: fill 0.5s ease forwards 4.2s;
+}
+
+/* Vagos */
+#vagos_title path:nth-child(1) {
+  stroke-dasharray: 337.20166015625;
+  stroke-dashoffset: 337.20166015625;
+  animation: line-anim 2s ease forwards 0.8s;
+}
+
+#vagos_title path:nth-child(2) {
+  stroke-dasharray: 377.300048828125;
+  stroke-dashoffset: 377.300048828125;
+  animation: line-anim 2s ease forwards 0.6s;
+}
+
+#vagos_title path:nth-child(3) {
+  stroke-dasharray: 431.9333801269531;
+  stroke-dashoffset: 431.9333801269531;
+  animation: line-anim 2s ease forwards 0.4s;
+}
+
+#vagos_title path:nth-child(4) {
+  stroke-dasharray: 324.10455322265625;
+  stroke-dashoffset: 324.10455322265625;
+  animation: line-anim 2s ease forwards 0.2s;
+}
+
+#vagos_title path:nth-child(5) {
+  stroke-dasharray: 300.3179626464844;
+  stroke-dashoffset: 300.3179626464844;
+  animation: line-anim 2s ease forwards;
+}
+
+/* Software */
+#software_title path:nth-child(1) {
+  stroke-dasharray: 317.31201171875;
+  stroke-dashoffset: 317.31201171875;
+  animation: line-anim 2s ease forwards 2.4s;
+}
+
+#software_title path:nth-child(2) {
+  stroke-dasharray: 366.6153564453125;
+  stroke-dashoffset: 366.6153564453125;
+  animation: line-anim 2s ease forwards 2.2s;
+}
+
+#software_title path:nth-child(3) {
+  stroke-dasharray: 324.1041564941406;
+  stroke-dashoffset: 324.1041564941406;
+  animation: line-anim 2s ease forwards 2s;
+}
+
+#software_title path:nth-child(4) {
+  stroke-dasharray: 529.8272705078125;
+  stroke-dashoffset: 529.8272705078125;
+  animation: line-anim 2s ease forwards 1.8s;
+}
+
+#software_title path:nth-child(5) {
+  stroke-dasharray: 232.447998046875;
+  stroke-dashoffset: 232.447998046875;
+  animation: line-anim 2s ease forwards 1.6s;
+}
+
+#software_title path:nth-child(6) {
+  stroke-dasharray: 264.7039794921875;
+  stroke-dashoffset: 264.7039794921875;
+  animation: line-anim 2s ease forwards 1.4s;
+}
+
+#software_title path:nth-child(7) {
+  stroke-dasharray: 377.29998779296875;
+  stroke-dashoffset: 377.29998779296875;
+  animation: line-anim 2s ease forwards 1.2s;
+}
+
+#software_title path:nth-child(8) {
+  stroke-dasharray: 337.19903564453125;
+  stroke-dashoffset: 337.19903564453125;
+  animation: line-anim 2s ease forwards 1s;
+}
+
+#eclipse {
+  transform: translate(-35%, -35%);
+  animation: eclipsate 4s linear forwards;
+}
+
+#vagos_subtitle {
+  opacity: 0;
+  animation: appear 1s linear forwards 4.5s;
+}
+
+#vagos_sun {
+  box-shadow: 0 0 50px 5px transparent;
+  animation: contaminate 1s linear forwards 4s;
+}
+
+#vagos_sun_mobile {
+  box-shadow: 0 0 50px 5px #f97316;
+}
+
+@keyframes line-anim {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fill {
+  from {
+    fill: transparent;
+  }
+  to {
+    fill: white;
+  }
+}
+
+@keyframes eclipsate {
+  from {
+    transform: translate(0%, 0%);
+  }
+  to {
+    transform: translate(-35%, -35%);
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contaminate {
+  from {
+    box-shadow: 0 0 50px 5px transparent;
+  }
+  to {
+    box-shadow: 0 0 50px 3px #f97316;
+  }
+}
