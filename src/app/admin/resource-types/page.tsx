@@ -37,13 +37,13 @@ export default function ResourceTypesList() {
     <ProtectedRoute requiredRole={ROLENAME_ADMIN}>
       <div className=" w-full min-h-screen flex justify-center">
         {(resourceTypes && (
-          <div className="mt-32 w-5/6">
-            <div className="flex justify-between">
-              <h1 className="text-2xl font-light mb-12">
+          <div className="mt-8 sm:mt-32 w-5/6">
+            <div className="flex flex-col sm:flex-row justify-between mb-8">
+              <h1 className="text-lg sm:text-2xl font-light whitespace-nowrap">
                 {"Admin > Tipos de recurso"}
               </h1>
 
-              <div className="w-1/6 flex justify-end h-fit">
+              <div className="w-1/6 min-w-[120px] mt-4 sm:mt-0">
                 <GlowingButton
                   text="Nuevo tipo"
                   onClick={() => router.push("resource-types/create")}
@@ -51,13 +51,13 @@ export default function ResourceTypesList() {
               </div>
             </div>
 
-            <div>
-              <h2 className="bg-dark-300 rounded-t-md p-3">
+            <div className="overflow-scroll rounded-t-md rounded-md">
+              <h2 className="bg-dark-300 p-3 w-full min-w-[600px]">
                 Todos los tipos de recursos
                 <span className="text-white/50">{` ${resourceTypes.length}`}</span>
               </h2>
 
-              <table className="bg-dark-300 w-full table-auto text-center rounded-b-md overflow-hidden">
+              <table className="bg-dark-300 w-full table-auto text-center overflow-hidden min-w-[600px]">
                 <thead className="bg-dark-200 border-t-[1px] border-b-[1px] border-white/25">
                   <tr className="text-sm text-gray-300">
                     <th className="p-2">Id</th>
