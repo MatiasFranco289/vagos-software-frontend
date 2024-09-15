@@ -4,12 +4,12 @@ export const modalKeyframes = {
       backdropFilter: "blur(0);background-color: rgba(255,255,255,0);",
     },
     "100%": {
-      backdropFilter: "blur(4px);background-color: rgba(255,255,255,0.2);",
+      backdropFilter: "blur(4px);background-color: rgba(255,255,255,0.1);",
     },
   },
   backdropFadeOut: {
     "0%": {
-      backdropFilter: "blur(4px);background-color: rgba(255,255,255,0.2);",
+      backdropFilter: "blur(4px);background-color: rgba(255,255,255,0.1);",
     },
     "100%": {
       backdropFilter: "blur(0px);background-color: rgba(255,255,255,0);",

@@ -33,6 +33,7 @@ export const GET_ALL_RESOURCE_TYPES_API_URL = "/api/admin/resources/types";
 export const POST_PROJECT_RESOURCE_API_URL = "/api/admin/projects/resources";
 export const POST_PROJECT_API_URL = "/api/admin/projects";
 export const POST_BLOG_API_URL = "/api/admin/blogs";
+export const POST_RESOURCE_TYPE_API_URL = "/api/admin/resources/types";
 
 export const PAGES_URLS = {
   home: "/",

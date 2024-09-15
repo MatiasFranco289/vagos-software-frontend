@@ -45,7 +45,7 @@ export default function Modal({
         className={`fixed top-0 left-0 w-full h-screen z-50 flex justify-center items-center ${
           isOpen
             ? "animate-backdrop-fade-in bg-transparent"
-            : "animate-backdrop-fade-out bg-white/20"
+            : "animate-backdrop-fade-out bg-white/10"
         }`}
       >
         <div
