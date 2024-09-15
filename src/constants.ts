@@ -28,6 +28,7 @@ export const GET_PROJECTS = "/api/projects";
 export const GET_PROJECT_DETAILS = "/api/projects/";
 export const GET_PROJECT_STATES_API_URL = "/api/projects/status";
 export const GET_PROJECT_TAGS_API_URL = "/api/projects/tags";
+export const GET_ALL_RESOURCE_TYPES_API_URL = "/api/admin/resources/types";
 
 export const POST_PROJECT_RESOURCE_API_URL = "/api/admin/projects/resources";
 export const POST_PROJECT_API_URL = "/api/admin/projects";

@@ -5,7 +5,7 @@ interface ButtonProps {
 }
 export default function GlowingButton({ text, onClick, type }: ButtonProps) {
   return (
-    <div className="w-5/6 relative group">
+    <div className="w-full relative group">
       <button
         className="text-white rounded-md p-2 w-full border-[1px] duration-200 relative z-10
         bg-dark-100 group-hover:text-orange-500 group-hover:border-orange-500 
