@@ -37,6 +37,8 @@ export const POST_RESOURCE_TYPE_API_URL = "/api/admin/resources/types";
 
 export const PUT_RESOURCE_TYPE_API_URL = "/api/admin/resources/types";
 
+export const DELETE_RESOURCE_TYPE_API_URL = "/api/admin/resources/types";
+
 export const PAGES_URLS = {
   home: "/",
   projects: "/projects",

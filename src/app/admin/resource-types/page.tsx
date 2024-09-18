@@ -19,11 +19,13 @@ import {
   normalizeDate,
 } from "@/utils";
 import { useEffect, useState } from "react";
+import { SlTrash } from "react-icons/sl";
 import GlowingButton from "@/components/GlowingButton/GlowingButton";
 import ResourceTypeForm from "@/components/ResourceTypeForm/ResourceTypeForm";
 import { createResourceTypeSchema } from "@/validations/CreateResourceTypeValidation";
 import { ApiResponse } from "@/interfaces";
 import axios from "axios";
+import DeleteResourceTypeModal from "@/components/DeleteResourceTypeModal/DeleteResourceTypeModal";
 
 export default function ResourceTypesList() {
   const apiBaseUrl = getEnvironmentVariable("NEXT_PUBLIC_BACKEND_BASE_URL");
@@ -34,7 +36,9 @@ export default function ResourceTypesList() {
   const [newTypeModalOpen, setNewTypeModalOpen] = useState(false);
 
   const [editTypeModalOpen, setEditTypeModalOpen] = useState(false);
+  const [deleteTypeModalOpen, setDeleteTypeModalOpen] = useState(false);
   const [actualTypeIndexToEdit, setActualTypeIndexToEdit] = useState(0);
+  const [actualTypeIndexToDelete, setActualTypeIndexToDelete] = useState(0);
 
   useEffect(() => {
     getAllResourceTypes();
@@ -136,9 +140,14 @@ export default function ResourceTypesList() {
     setNewTypeModalOpen(true);
   };
 
-  const handleResourceTypePressed = (id: number) => {
-    setActualTypeIndexToEdit(id);
+  const handleResourceTypePressed = (index: number) => {
+    setActualTypeIndexToEdit(index);
     setEditTypeModalOpen(true);
+  };
+
+  const handleDeleteTypePressed = (index: number) => {
+    setActualTypeIndexToDelete(index);
+    setDeleteTypeModalOpen(true);
   };
 
   return (
@@ -164,6 +173,16 @@ export default function ResourceTypesList() {
                   name: resourceTypes[actualTypeIndexToEdit].name,
                 }}
                 formType="UPDATE"
+              />
+            )}
+
+            {deleteTypeModalOpen && (
+              <DeleteResourceTypeModal
+                setModalOpen={setDeleteTypeModalOpen}
+                resourceTypeToDelete={{
+                  id: resourceTypes[actualTypeIndexToDelete].id,
+                  name: resourceTypes[actualTypeIndexToDelete].name,
+                }}
               />
             )}
 
@@ -193,6 +212,7 @@ export default function ResourceTypesList() {
                     <th>Nombre</th>
                     <th>Fecha de creacion</th>
                     <th>Fecha de actualizacion</th>
+                    <th></th>
                   </tr>
                 </thead>
 
@@ -202,13 +222,31 @@ export default function ResourceTypesList() {
                       return (
                         <tr
                           key={`resource_type_${index}`}
-                          className="hover:bg-dark-400 duration-150 cursor-pointer"
-                          onClick={() => handleResourceTypePressed(index)}
+                          className="hover:bg-dark-400 duration-150 cursor-pointer relative"
                         >
-                          <td className="p-4">{resourceType.id}</td>
-                          <td>{resourceType.name}</td>
-                          <td>{normalizeDate(resourceType.created_at)}</td>
-                          <td>{normalizeDate(resourceType.updated_at)}</td>
+                          <td
+                            className="p-4"
+                            onClick={() => handleResourceTypePressed(index)}
+                          >
+                            {resourceType.id}
+                          </td>
+                          <td onClick={() => handleResourceTypePressed(index)}>
+                            {resourceType.name}
+                          </td>
+                          <td onClick={() => handleResourceTypePressed(index)}>
+                            {normalizeDate(resourceType.created_at)}
+                          </td>
+                          <td onClick={() => handleResourceTypePressed(index)}>
+                            {normalizeDate(resourceType.updated_at)}
+                          </td>
+                          <td
+                            className="group pr-4"
+                            onClick={() => handleDeleteTypePressed(index)}
+                          >
+                            <div className="flex justify-center">
+                              <SlTrash className="text-3xl group-hover:text-orange-600" />
+                            </div>
+                          </td>
                         </tr>
                       );
                     })) || (
