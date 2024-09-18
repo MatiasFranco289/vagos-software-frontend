@@ -19,6 +19,7 @@ interface ResourceTypesFormProps {
     newResourceTypeName: string
   ) => Promise<ApiResponse<ApiResourceType | null> | string>;
   initialValues?: ResourceTypesFormValues;
+  formType: "CREATE" | "UPDATE";
 }
 
 export default function ResourceTypeForm({
@@ -26,6 +27,7 @@ export default function ResourceTypeForm({
   validationSchema,
   onFormSendPromise,
   initialValues: initialValues = { name: "" },
+  formType,
 }: ResourceTypesFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [popUpMessage, setPopUpMessage] = useState("");
@@ -34,13 +36,19 @@ export default function ResourceTypeForm({
 
   const SUCCESSFULL_RESOURCE_TYPE_CREATION_MESSAGE =
     "El tipo de recurso fue creado exitosamente.";
+  const SUCCESSFULL_RESOURCE_TYPE_UPDATE_MESSAGE =
+    "El tipo de recurso fue actualizado exitosamente.";
 
   const onFormSubmit = (formValues: ResourceTypesFormValues) => {
     setIsLoading(true);
 
     onFormSendPromise(formValues.name)
       .then((_response) => {
-        setPopUpMessage(SUCCESSFULL_RESOURCE_TYPE_CREATION_MESSAGE);
+        setPopUpMessage(
+          formType === "CREATE"
+            ? SUCCESSFULL_RESOURCE_TYPE_CREATION_MESSAGE
+            : SUCCESSFULL_RESOURCE_TYPE_UPDATE_MESSAGE
+        );
         setSuccessModalOpen(true);
       })
       .catch((err: string) => {
@@ -99,8 +107,12 @@ export default function ResourceTypeForm({
           >
             {({ errors, touched, setFieldValue, values }) => (
               <Form>
-                <h2 className="text-2xl font-semibold">
-                  Nuevo tipo de recurso
+                <h2 className="text-2xl font-semibold mt-4">
+                  {`${
+                    formType === "CREATE"
+                      ? "Nuevo tipo de recurso"
+                      : "Actualizar tipo de recurso"
+                  }`}
                 </h2>
 
                 <div className="relative mt-4">
@@ -127,7 +139,10 @@ export default function ResourceTypeForm({
                 </div>
 
                 <div className="mt-4">
-                  <GlowingButton text="Crear" type="submit" />
+                  <GlowingButton
+                    text={`${formType === "CREATE" ? "Crear" : "Actualizar"}`}
+                    type="submit"
+                  />
                 </div>
               </Form>
             )}
