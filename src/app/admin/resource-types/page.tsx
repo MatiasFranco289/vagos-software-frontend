@@ -8,8 +8,10 @@ import {
   DEFAULT_API_ERROR_MESSAGE,
   GET_ALL_RESOURCE_TYPES_API_URL,
   POST_RESOURCE_TYPE_API_URL,
+  PUT_RESOURCE_TYPE_API_URL,
   ROLENAME_ADMIN,
   STATUS_CODE_CREATED,
+  STATUS_CODE_OK,
 } from "@/constants";
 import {
   getEnvironmentVariable,
@@ -27,11 +29,12 @@ export default function ResourceTypesList() {
   const apiBaseUrl = getEnvironmentVariable("NEXT_PUBLIC_BACKEND_BASE_URL");
   const getResourceTypesUrl = `${apiBaseUrl}${GET_ALL_RESOURCE_TYPES_API_URL}`;
   const postResourceTypesUrl = `${apiBaseUrl}${POST_RESOURCE_TYPE_API_URL}`;
+  const puResourceTypesUrl = `${apiBaseUrl}${PUT_RESOURCE_TYPE_API_URL}`;
   const [resourceTypes, setResourceTypes] = useState<Array<ApiResourceType>>();
   const [newTypeModalOpen, setNewTypeModalOpen] = useState(false);
 
   const [editTypeModalOpen, setEditTypeModalOpen] = useState(false);
-  const [actualTypeIdToEdit, setactualTypeIdToEdit] = useState(0);
+  const [actualTypeIndexToEdit, setActualTypeIndexToEdit] = useState(0);
 
   useEffect(() => {
     getAllResourceTypes();
@@ -85,15 +88,58 @@ export default function ResourceTypesList() {
     );
   };
 
+  const updateResourceType = (resourceTypeNewName: string) => {
+    const resourceTypeToEdit = (resourceTypes as Array<ApiResourceType>)[
+      actualTypeIndexToEdit
+    ];
+    const errorsToShow = {
+      "name must be unique":
+        "Ya existe otro tipo de recurso con el mismo nombre.",
+    };
+
+    return new Promise<ApiResponse<null> | string>(async (resolve, reject) => {
+      try {
+        const response = await axiosInstance.put(
+          `${puResourceTypesUrl}/${resourceTypeToEdit.id}`,
+          {
+            name: resourceTypeNewName,
+          }
+        );
+
+        if (response.status === STATUS_CODE_OK) {
+          return resolve(response.data);
+        }
+
+        reject(response.data.data);
+      } catch (err) {
+        let errorMessage = DEFAULT_API_ERROR_CLIENT_MESSAGE;
+
+        if (axios.isAxiosError(err) && err.response) {
+          const response = err.response.data as ApiResponse<unknown>;
+          const managedMessage = manageRequestErrors(response, errorsToShow);
+
+          errorMessage = managedMessage || errorMessage;
+        }
+
+        console.error(
+          "The following error has occurred while trying to update the resource type: "
+        );
+        console.error(err);
+
+        reject(errorMessage);
+      }
+    });
+  };
+
   const handleNewTypeClicked = () => {
     document.body.classList.add("no-scroll");
     setNewTypeModalOpen(true);
   };
-  // TODO: Add update here
-  /* const handleResourceTypePressed = (id: number) => {
-    setactualTypeIdToEdit(id);
+
+  const handleResourceTypePressed = (id: number) => {
+    setActualTypeIndexToEdit(id);
     setEditTypeModalOpen(true);
-  }; */
+  };
 
   return (
     <ProtectedRoute requiredRole={ROLENAME_ADMIN}>
@@ -105,17 +151,19 @@ export default function ResourceTypesList() {
                 setModalOpen={setNewTypeModalOpen}
                 validationSchema={createResourceTypeSchema}
                 onFormSendPromise={createResourceType}
+                formType="CREATE"
               />
             )}
 
             {editTypeModalOpen && (
               <ResourceTypeForm
-                setModalOpen={setNewTypeModalOpen}
+                setModalOpen={setEditTypeModalOpen}
                 validationSchema={createResourceTypeSchema}
-                onFormSendPromise={createResourceType}
+                onFormSendPromise={updateResourceType}
                 initialValues={{
-                  name: resourceTypes[1].name,
+                  name: resourceTypes[actualTypeIndexToEdit].name,
                 }}
+                formType="UPDATE"
               />
             )}
 
@@ -155,10 +203,7 @@ export default function ResourceTypesList() {
                         <tr
                           key={`resource_type_${index}`}
                           className="hover:bg-dark-400 duration-150 cursor-pointer"
-                          onClick={
-                            () => {}
-                            /* handleResourceTypePressed(resourceType.name) */
-                          }
+                          onClick={() => handleResourceTypePressed(index)}
                         >
                           <td className="p-4">{resourceType.id}</td>
                           <td>{resourceType.name}</td>
